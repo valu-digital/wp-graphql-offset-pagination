@@ -1,21 +1,15 @@
 <?php
 
-class PaginationTest extends \Codeception\TestCase\WPTestCase
+class PostPaginationTest extends \Codeception\TestCase\WPTestCase
 {
-    /**
-     * @var \WpunitTester
-     */
-    protected $tester;
-
     public function setUp(): void
     {
-        // Before...
         parent::setUp();
 
         register_post_type('test_cpt', [
             'show_ui' => true,
             'labels' => [
-                'menu_name' => __('Docs', 'your-textdomain'), //@see https://developer.wordpress.org/themes/functionality/internationalization/
+                'menu_name' => __('Docs', 'your-textdomain'),
             ],
             'supports' => ['title'],
             'show_in_graphql' => true,
@@ -23,15 +17,10 @@ class PaginationTest extends \Codeception\TestCase\WPTestCase
             'graphql_single_name' => 'testCpt',
             'graphql_plural_name' => 'testCpts',
         ]);
-
-        // Your set up methods here.
     }
 
     public function tearDown(): void
     {
-        // Your tear down methods here.
-
-        // Then...
         parent::tearDown();
     }
 

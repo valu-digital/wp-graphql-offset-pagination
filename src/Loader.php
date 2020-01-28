@@ -41,6 +41,16 @@ class Loader
         );
     }
 
+    /**
+     * By default wp-graphql slices the "nodes" in the connection nodes based
+     * on the "first" input field:
+     *
+     * https://github.com/wp-graphql/wp-graphql/blob/d5089db403c30f634e8de422e32c46074e1f140d/src/Data/Connection/AbstractConnectionResolver.php#L682
+     * https://github.com/wp-graphql/wp-graphql/blob/d5089db403c30f634e8de422e32c46074e1f140d/src/Data/Connection/AbstractConnectionResolver.php#L490
+     *
+     * It defaults to 10 which interferes with offset pagination. This filter
+     * restores the nodes to original items when offset pagination is in use.
+     */
     function op_graphql_connection(array $connection, $resolver)
     {
         $args = $resolver->get_query_args();
@@ -54,13 +64,6 @@ class Loader
     {
         $query = $resolver->get_query();
         $page_info['total'] = $query->found_posts;
-
-        // $page_info['previousPage'] = null;
-        // $page_info['nextPage'] = null;
-        // $page_info['totalPages'] = null;
-        // $page_info['startCursor'] = null;
-        // $page_info['endCursor'] = null;
-
         return $page_info;
     }
 
@@ -91,20 +94,23 @@ class Loader
         ]);
 
         register_graphql_input_type('OffsetPagination', [
-            'description' => __('lala', 'wp-graphql-offet-pagination'),
+            'description' => __(
+                'Offset pagination input type',
+                'wp-graphql-offet-pagination'
+            ),
             'fields' => [
                 'postsPerPage' => [
                     'type' => 'Int',
                     'description' => __(
                         'Number of post to show per page. Passed to posts_per_page of WP_Query.',
-                        'wp-graphql-offet-pagination'
+                        'wp-graphql-offset-pagination'
                     ),
                 ],
                 'offset' => [
                     'type' => 'Int',
                     'description' => __(
                         'Number of post to show per page. Passed to posts_per_page of WP_Query.',
-                        'wp-graphql-offet-pagination'
+                        'wp-graphql-offset-pagination'
                     ),
                 ],
             ],
@@ -115,7 +121,7 @@ class Loader
             'offsetPagination',
             [
                 'type' => 'OffsetPagination',
-                'description' => 'wat',
+                'description' => 'Paginate content nodes with offsets',
             ]
         );
     }
