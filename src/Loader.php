@@ -82,6 +82,10 @@ class Loader
 
     function op_register_types()
     {
+        foreach (\WPGraphQL::get_allowed_post_types() as $post_type) {
+            $this->add_post_type_fields(get_post_type_object($post_type));
+        }
+
         register_graphql_field('WPPageInfo', 'total', [
             'type' => 'Int',
         ]);
@@ -114,5 +118,15 @@ class Loader
                 'description' => 'wat',
             ]
         );
+    }
+    function add_post_type_fields(\WP_Post_Type $post_type_object)
+    {
+        $type = ucfirst($post_type_object->graphql_single_name);
+        register_graphql_fields("RootQueryTo${type}ConnectionWhereArgs", [
+            'offsetPagination' => [
+                'type' => 'OffsetPagination',
+                'description' => "Paginate ${type}s with offsets",
+            ],
+        ]);
     }
 }

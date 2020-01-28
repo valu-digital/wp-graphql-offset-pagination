@@ -12,6 +12,18 @@ class PaginationTest extends \Codeception\TestCase\WPTestCase
         // Before...
         parent::setUp();
 
+        register_post_type('test_cpt', [
+            'show_ui' => true,
+            'labels' => [
+                'menu_name' => __('Docs', 'your-textdomain'), //@see https://developer.wordpress.org/themes/functionality/internationalization/
+            ],
+            'supports' => ['title'],
+            'show_in_graphql' => true,
+            'hierarchical' => true,
+            'graphql_single_name' => 'testCpt',
+            'graphql_plural_name' => 'testCpts',
+        ]);
+
         // Your set up methods here.
     }
 
@@ -23,24 +35,25 @@ class PaginationTest extends \Codeception\TestCase\WPTestCase
         parent::tearDown();
     }
 
-    function createPosts($count)
+    function createPosts($count, $args = [])
     {
-        foreach (range(0, $count) as $number) {
-            $number = str_pad($number, 2, '0', STR_PAD_LEFT);
-            $tags = self::factory()->post->create([
-                'post_title' => "Post $number",
-            ]);
-        }
-    }
+        $title_prefix = 'Post';
 
-    function createPages($count)
-    {
+        if (isset($args['title_prefix'])) {
+            $title_prefix = $args['title_prefix'];
+            unset($args['title_prefix']);
+        }
+
         foreach (range(0, $count) as $number) {
             $number = str_pad($number, 2, '0', STR_PAD_LEFT);
-            $tags = self::factory()->post->create([
-                'post_type' => 'page',
-                'post_title' => "Page $number",
-            ]);
+            $tags = self::factory()->post->create(
+                array_merge(
+                    [
+                        'post_title' => "$title_prefix $number",
+                    ],
+                    $args
+                )
+            );
         }
     }
 
@@ -158,7 +171,10 @@ class PaginationTest extends \Codeception\TestCase\WPTestCase
     public function testContentNodesCanMixPostTypes()
     {
         $this->createPosts(10);
-        $this->createPages(10);
+        $this->createPosts(10, [
+            'post_type' => 'page',
+            'title_prefix' => 'Page',
+        ]);
 
         $res = graphql([
             'query' => '
@@ -209,7 +225,10 @@ class PaginationTest extends \Codeception\TestCase\WPTestCase
     public function testContentNodesCanFilterAndPaginate()
     {
         $this->createPosts(10);
-        $this->createPages(10);
+        $this->createPosts(10, [
+            'post_type' => 'page',
+            'title_prefix' => 'Page',
+        ]);
 
         $res = graphql([
             'query' => '
@@ -240,5 +259,135 @@ class PaginationTest extends \Codeception\TestCase\WPTestCase
             ['Post 02', 'Post 03', 'Post 04', 'Post 05', 'Post 06'],
             $titles
         );
+    }
+
+    public function testPostsCanLimitPostsPerPage()
+    {
+        $this->createPosts(10);
+
+        $res = graphql([
+            'query' => '
+            query Posts {
+                posts(where: {
+                    orderby: {field: TITLE, order: ASC},
+                    offsetPagination: {postsPerPage: 5}
+                }) {
+                nodes {
+                    title
+                }
+              }
+            }
+        ',
+        ]);
+
+        $nodes = $res['data']['posts']['nodes'];
+        $titles = \wp_list_pluck($nodes, 'title');
+
+        $this->assertEquals($titles, [
+            'Post 00',
+            'Post 01',
+            'Post 02',
+            'Post 03',
+            'Post 04',
+        ]);
+    }
+
+    public function testPostsMoveOffset()
+    {
+        $this->createPosts(10);
+
+        $res = graphql([
+            'query' => '
+            query Posts {
+                posts(where: {
+                    orderby: {field: TITLE, order: ASC},
+                    offsetPagination: {postsPerPage: 5, offset: 2}
+                }) {
+                nodes {
+                    title
+                }
+              }
+            }
+        ',
+        ]);
+
+        $nodes = $res['data']['posts']['nodes'];
+        $titles = \wp_list_pluck($nodes, 'title');
+
+        $this->assertEquals($titles, [
+            'Post 02',
+            'Post 03',
+            'Post 04',
+            'Post 05',
+            'Post 06',
+        ]);
+    }
+
+    public function testCPTCanLimitPostsPerPage()
+    {
+        $this->createPosts(10, [
+            'post_type' => 'test_cpt',
+            'title_prefix' => 'Test CPT',
+        ]);
+
+        $res = graphql([
+            'query' => '
+            query Posts {
+                testCpts(where: {
+                    orderby: {field: TITLE, order: ASC},
+                    offsetPagination: {postsPerPage: 5}
+                }) {
+                nodes {
+                    title
+                }
+              }
+            }
+        ',
+        ]);
+
+        $nodes = $res['data']['testCpts']['nodes'];
+        $titles = \wp_list_pluck($nodes, 'title');
+
+        $this->assertEquals($titles, [
+            'Test CPT 00',
+            'Test CPT 01',
+            'Test CPT 02',
+            'Test CPT 03',
+            'Test CPT 04',
+        ]);
+    }
+
+    public function testCPTCanMoveOffset()
+    {
+        $this->createPosts(10, [
+            'post_type' => 'test_cpt',
+            'title_prefix' => 'Test CPT',
+        ]);
+
+        $res = graphql([
+            'query' => '
+            query Posts {
+                testCpts(where: {
+                    orderby: {field: TITLE, order: ASC},
+                    offsetPagination: {postsPerPage: 5, offset: 2}
+                }) {
+                nodes {
+                    title
+                }
+              }
+            }
+        ',
+        ]);
+
+        $nodes = $res['data']['testCpts']['nodes'];
+        $titles = \wp_list_pluck($nodes, 'title');
+
+        $this->assertEquals($titles, [
+            'Test CPT 02',
+            'Test CPT 03',
+            'Test CPT 04',
+            'Test CPT 05',
+            'Test CPT 06',
+        ]);
     }
 }
