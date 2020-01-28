@@ -13,7 +13,7 @@ In the git repository root run
 This will build and start up the Docker environment. It will take awhile but
 only on the first time.
 
-Once it's running on a second terminal run to open the testing shell
+Once it's running, on a second terminal start the testing shell
 
     ./docker/run shell
 
