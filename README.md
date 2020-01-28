@@ -23,3 +23,11 @@ query Posts {
 ```
 
 The where argument is the same for `contentNodes` and `users`.
+
+## Prior Art
+
+This a reimplementation of [darylldoyle/wp-graphql-offset-pagination][] by
+Daryll Doyle. The API is bit different but this one has unit&integration
+tests and support for latest WPGraphQL.
+
+[darylldoyle/wp-graphql-offset-pagination]: https://github.com/darylldoyle/wp-graphql-offset-pagination
