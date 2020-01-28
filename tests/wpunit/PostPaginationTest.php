@@ -335,6 +335,7 @@ class PostPaginationTest extends \Codeception\TestCase\WPTestCase
         ',
         ]);
 
+        $this->assertEquals('', $res['errors'][0]['message'] ?? '');
         $nodes = $res['data']['testCpts']['nodes'];
         $titles = \wp_list_pluck($nodes, 'title');
 
