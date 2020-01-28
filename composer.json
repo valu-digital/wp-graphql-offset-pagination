@@ -1,0 +1,38 @@
+{
+  "name": "example/example",
+  "description": "Example",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0-or-later",
+  "authors": [
+    {
+      "name": "Esa-Matti Suuronen",
+      "email": "esa-matti.suuronen@valu.fi",
+      "role": "developer"
+    }
+  ],
+  "require-dev": {
+    "valu/wp-testing-tools": "^0.4.0",
+    "lucatume/wp-browser": "^2.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Example\\": "src/"
+    }
+  },
+  "scripts": {
+    "wp-install": "wp-install --full --env-file .env --wp-composer-file composer.wp-install.json",
+    "wpunit": "codecept run wpunit",
+    "functional": "codecept run functional",
+    "test": [
+      "@wpunit",
+      "@functional"
+    ]
+  },
+  "config": {
+    "optimize-autoloader": true
+  },
+  "support": {
+    "issues": "https://github.com/example/example/issues",
+    "source": "https://github.com/example/example"
+  }
+}
