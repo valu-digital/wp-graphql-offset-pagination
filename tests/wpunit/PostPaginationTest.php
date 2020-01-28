@@ -22,6 +22,7 @@ class PostPaginationTest extends \Codeception\TestCase\WPTestCase
     public function tearDown(): void
     {
         parent::tearDown();
+        \WPGraphQL::__clear_schema();
     }
 
     function createPosts($count, $args = [])
