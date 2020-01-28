@@ -1,8 +1,14 @@
 # wp-graphql-offset-pagination
 
-Add traditional offset pagination support to WPGraphQL. This useful only when
-you need to implement weird custom ordering / filtering which is difficult to
-do with the build-in cursor based pagination.
+Adds traditional offset pagination support to WPGraphQL. This useful only
+when you need to implement
+
+-   complex filtering / ordering with custom SQL
+-   numbered links to the "pages"
+
+You should not use this plugin if you can avoid it. The cursors in the
+wp-graphql core are faster and more efficient. This plugin performs
+comparatively to a traditional WordPress.
 
 This plugin implements offset pagination for post object (build-in and custom
 ones), content nodes and user connections. PRs welcome for term connections.
@@ -15,6 +21,14 @@ This is tested with WPGraphQL 0.6.x.
 ```graphql
 query Posts {
     posts(where: { offsetPagination: { size: 10, offset: 10 } }) {
+        pageInfo {
+            offsetPagination {
+                # Get the total node count in the the connection. Using this
+                # field activates total calculations which will make your
+                # queries slower. Use with caution.
+                total
+            }
+        }
         nodes {
             title
         }
