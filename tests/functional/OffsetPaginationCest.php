@@ -14,7 +14,7 @@ class OffsetPaginationCest
         query Posts {
             pages(where: {
                 orderby: {field: TITLE, order: ASC},
-                offsetPagination: {postsPerPage: 5, offset: 2}
+                offsetPagination: {size: 5, offset: 2}
             }) {
             nodes {
                 title

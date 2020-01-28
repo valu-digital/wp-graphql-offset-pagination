@@ -73,9 +73,9 @@ class Loader
             $query_args['offset'] = $where_args['offsetPagination']['offset'];
         }
 
-        if (isset($where_args['offsetPagination']['postsPerPage'])) {
+        if (isset($where_args['offsetPagination']['size'])) {
             $query_args['posts_per_page'] =
-                $where_args['offsetPagination']['postsPerPage'];
+                $where_args['offsetPagination']['size'];
         }
 
         $query_args['no_found_rows'] = false;
@@ -99,7 +99,7 @@ class Loader
                 'wp-graphql-offet-pagination'
             ),
             'fields' => [
-                'postsPerPage' => [
+                'size' => [
                     'type' => 'Int',
                     'description' => __(
                         'Number of post to show per page. Passed to posts_per_page of WP_Query.',

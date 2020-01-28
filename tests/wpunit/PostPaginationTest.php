@@ -56,7 +56,7 @@ class PostPaginationTest extends \Codeception\TestCase\WPTestCase
             query Posts {
                 contentNodes(where: {
                     orderby: {field: TITLE, order: ASC},
-                    offsetPagination: {postsPerPage: 5}
+                    offsetPagination: {size: 5}
                 }) {
                 nodes {
                     ... on Post {
@@ -89,7 +89,7 @@ class PostPaginationTest extends \Codeception\TestCase\WPTestCase
             query Posts {
                 contentNodes(where: {
                     orderby: {field: TITLE, order: ASC},
-                    offsetPagination: {postsPerPage: 5, offset: 1}
+                    offsetPagination: {size: 5, offset: 1}
                 }) {
                 nodes {
                     ... on Post {
@@ -120,7 +120,7 @@ class PostPaginationTest extends \Codeception\TestCase\WPTestCase
             query Posts {
                 contentNodes(where: {
                     orderby: {field: TITLE, order: ASC},
-                    offsetPagination: {postsPerPage: 15, offset: 5}
+                    offsetPagination: {size: 15, offset: 5}
                 }) {
                 nodes {
                     ... on Post {
@@ -171,7 +171,7 @@ class PostPaginationTest extends \Codeception\TestCase\WPTestCase
             query Posts {
                 contentNodes(where: {
                     orderby: {field: TITLE, order: ASC},
-                    offsetPagination: {postsPerPage: 15, offset: 5}
+                    offsetPagination: {size: 15, offset: 5}
                 }) {
                 nodes {
                     ... on Post {
@@ -225,7 +225,7 @@ class PostPaginationTest extends \Codeception\TestCase\WPTestCase
             query Posts {
                 contentNodes(where: {
                     orderby: {field: TITLE, order: ASC},
-                    offsetPagination: {postsPerPage: 5, offset: 2},
+                    offsetPagination: {size: 5, offset: 2},
                     contentTypes: [POST]
                 }) {
                 nodes {
@@ -260,7 +260,7 @@ class PostPaginationTest extends \Codeception\TestCase\WPTestCase
             query Posts {
                 posts(where: {
                     orderby: {field: TITLE, order: ASC},
-                    offsetPagination: {postsPerPage: 5}
+                    offsetPagination: {size: 5}
                 }) {
                 nodes {
                     title
@@ -291,7 +291,7 @@ class PostPaginationTest extends \Codeception\TestCase\WPTestCase
             query Posts {
                 posts(where: {
                     orderby: {field: TITLE, order: ASC},
-                    offsetPagination: {postsPerPage: 5, offset: 2}
+                    offsetPagination: {size: 5, offset: 2}
                 }) {
                 nodes {
                     title
@@ -325,7 +325,7 @@ class PostPaginationTest extends \Codeception\TestCase\WPTestCase
             query Posts {
                 testCpts(where: {
                     orderby: {field: TITLE, order: ASC},
-                    offsetPagination: {postsPerPage: 5}
+                    offsetPagination: {size: 5}
                 }) {
                 nodes {
                     title
@@ -360,7 +360,7 @@ class PostPaginationTest extends \Codeception\TestCase\WPTestCase
             query Posts {
                 testCpts(where: {
                     orderby: {field: TITLE, order: ASC},
-                    offsetPagination: {postsPerPage: 5, offset: 2}
+                    offsetPagination: {size: 5, offset: 2}
                 }) {
                 nodes {
                     title
