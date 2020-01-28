@@ -80,6 +80,34 @@ class PostPaginationTest extends \Codeception\TestCase\WPTestCase
         ]);
     }
 
+    public function testContentNodesCanReadTotalViaPageInfo()
+    {
+        $this->createPosts(10);
+
+        $res = graphql([
+            'query' => '
+            query Posts {
+                contentNodes(where: {
+                    orderby: {field: TITLE, order: ASC},
+                    offsetPagination: {size: 5}
+                }) {
+                pageInfo {
+                    total
+                }
+                nodes {
+                    ... on Post {
+                        title
+                     }
+                   }
+                }
+            }
+        ',
+        ]);
+
+        $total = $res['data']['contentNodes']['pageInfo']['total'];
+        $this->assertEquals(11, $total);
+    }
+
     public function testContentNodesCanMoveOffset()
     {
         $this->createPosts(10);
