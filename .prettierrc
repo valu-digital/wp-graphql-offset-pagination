@@ -1,0 +1,13 @@
+{
+    "trailingComma": "all",
+    "tabWidth": 4,
+    "overrides": [
+        {
+            "files": "*.php",
+            "options": {
+                "trailingCommaPHP": "php5",
+                "singleQuote": true
+            }
+        }
+    ]
+}
