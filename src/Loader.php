@@ -21,7 +21,14 @@ class Loader
 
         add_filter(
             'graphql_map_input_fields_to_wp_query',
-            [$this, 'op_map_offset_to_query_args'],
+            [$this, 'op_map_offset_to_wp_query_args'],
+            10,
+            2
+        );
+
+        add_filter(
+            'graphql_map_input_fields_to_wp_user_query',
+            [$this, 'op_map_offset_to_wp_user_query_args'],
             10,
             2
         );
@@ -67,8 +74,10 @@ class Loader
         return $page_info;
     }
 
-    function op_map_offset_to_query_args(array $query_args, array $where_args)
-    {
+    function op_map_offset_to_wp_query_args(
+        array $query_args,
+        array $where_args
+    ) {
         if (isset($where_args['offsetPagination']['offset'])) {
             $query_args['offset'] = $where_args['offsetPagination']['offset'];
         }
@@ -79,6 +88,21 @@ class Loader
         }
 
         $query_args['no_found_rows'] = false;
+
+        return $query_args;
+    }
+
+    function op_map_offset_to_wp_user_query_args(
+        array $query_args,
+        array $where_args
+    ) {
+        if (isset($where_args['offsetPagination']['offset'])) {
+            $query_args['offset'] = $where_args['offsetPagination']['offset'];
+        }
+
+        if (isset($where_args['offsetPagination']['size'])) {
+            $query_args['number'] = $where_args['offsetPagination']['size'];
+        }
 
         return $query_args;
     }
@@ -122,6 +146,15 @@ class Loader
             [
                 'type' => 'OffsetPagination',
                 'description' => 'Paginate content nodes with offsets',
+            ]
+        );
+
+        register_graphql_field(
+            'RootQueryToUserConnectionWhereArgs',
+            'offsetPagination',
+            [
+                'type' => 'OffsetPagination',
+                'description' => 'Paginate users with offsets',
             ]
         );
     }

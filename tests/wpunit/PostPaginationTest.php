@@ -36,7 +36,7 @@ class PostPaginationTest extends \Codeception\TestCase\WPTestCase
 
         foreach (range(0, $count) as $number) {
             $number = str_pad($number, 2, '0', STR_PAD_LEFT);
-            $tags = self::factory()->post->create(
+            self::factory()->post->create(
                 array_merge(
                     [
                         'post_title' => "$title_prefix $number",
