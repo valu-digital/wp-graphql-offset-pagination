@@ -23,7 +23,7 @@ query Posts {
     posts(where: { offsetPagination: { size: 10, offset: 10 } }) {
         pageInfo {
             offsetPagination {
-                # Get the total node count in the the connection. Using this
+                # Get the total node count in the connection. Using this
                 # field activates total calculations which will make your
                 # queries slower. Use with caution.
                 total
