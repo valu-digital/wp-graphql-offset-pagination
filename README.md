@@ -6,7 +6,7 @@ when you need to implement
 -   complex filtering / ordering with custom SQL
 -   numbered links to the "pages"
 
-You should not use this plugin if you can avoid it. The cursors in the
+**You should not use this plugin if you can avoid it.** The cursors in the
 wp-graphql core are faster and more efficient although this plugin should perform
 comparatively to a traditional WordPress pagination implementation.
 
