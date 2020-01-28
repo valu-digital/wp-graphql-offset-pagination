@@ -7,7 +7,7 @@ when you need to implement
 -   numbered links to the "pages"
 
 You should not use this plugin if you can avoid it. The cursors in the
-wp-graphql core are faster and more efficient. This plugin performs
+wp-graphql core are faster and more efficient although this plugin shoudl perform
 comparatively to a traditional WordPress.
 
 This plugin implements offset pagination for post object (build-in and custom
