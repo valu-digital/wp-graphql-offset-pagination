@@ -205,4 +205,40 @@ class PaginationTest extends \Codeception\TestCase\WPTestCase
             $titles
         );
     }
+
+    public function testContentNodesCanFilterAndPaginate()
+    {
+        $this->createPosts(10);
+        $this->createPages(10);
+
+        $res = graphql([
+            'query' => '
+            query Posts {
+                contentNodes(where: {
+                    orderby: {field: TITLE, order: ASC},
+                    offsetPagination: {postsPerPage: 5, offset: 2},
+                    contentTypes: [POST]
+                }) {
+                nodes {
+                    ... on Post {
+                        title
+                    }
+                    ... on Page {
+                        title
+                    }
+                  }
+                }
+            }
+        ',
+        ]);
+
+        $nodes = $res['data']['contentNodes']['nodes'];
+        $titles = \wp_list_pluck($nodes, 'title');
+
+        $this->assertEquals(5, count($titles));
+        $this->assertEquals(
+            ['Post 02', 'Post 03', 'Post 04', 'Post 05', 'Post 06'],
+            $titles
+        );
+    }
 }
