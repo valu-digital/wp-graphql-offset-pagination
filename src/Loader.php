@@ -46,6 +46,31 @@ class Loader
             10,
             2
         );
+
+        add_filter(
+            'graphql_post_object_connection_query_args',
+            [$this, 'op_graphql_post_object_connection_query_args'],
+            10,
+            5
+        );
+    }
+
+    /**
+     * Lazily enable total calculations only when they are asked in the
+     * selection set.
+     */
+    function op_graphql_post_object_connection_query_args(
+        $query_args,
+        $source,
+        $args,
+        $context,
+        \GraphQL\Type\Definition\ResolveInfo $info
+    ) {
+        $selection_set = $info->getFieldSelection(2);
+        if (isset($selection_set['pageInfo']['offsetPagination']['total'])) {
+            $query_args['no_found_rows'] = false;
+        }
+        return $query_args;
     }
 
     /**
@@ -70,7 +95,9 @@ class Loader
     function op_graphql_connection_page_info($page_info, $resolver)
     {
         $query = $resolver->get_query();
-        $page_info['total'] = $query->found_posts;
+        $page_info['offsetPagination'] = [
+            'total' => $query->found_posts,
+        ];
         return $page_info;
     }
 
@@ -86,8 +113,6 @@ class Loader
             $query_args['posts_per_page'] =
                 $where_args['offsetPagination']['size'];
         }
-
-        $query_args['no_found_rows'] = false;
 
         return $query_args;
     }
@@ -113,8 +138,28 @@ class Loader
             $this->add_post_type_fields(get_post_type_object($post_type));
         }
 
-        register_graphql_field('WPPageInfo', 'total', [
-            'type' => 'Int',
+        register_graphql_object_type('OffsetPaginationPageInfo', [
+            'description' => __(
+                'Get information about the offset pagination state',
+                'wp-graphql-offset-pagination'
+            ),
+            'fields' => [
+                'total' => [
+                    'type' => 'Int',
+                    'description' => __(
+                        'Total amount of nodes in this connection',
+                        'wp-graphql-offset-pagination'
+                    ),
+                ],
+            ],
+        ]);
+
+        register_graphql_field('WPPageInfo', 'offsetPagination', [
+            'type' => 'OffsetPaginationPageInfo',
+            'description' => __(
+                'Get information about the offset pagination state in the current connection',
+                'wp-graphql-offset-pagination'
+            ),
         ]);
 
         register_graphql_input_type('OffsetPagination', [

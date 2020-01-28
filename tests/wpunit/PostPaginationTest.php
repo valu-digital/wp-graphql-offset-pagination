@@ -92,7 +92,9 @@ class PostPaginationTest extends \Codeception\TestCase\WPTestCase
                     offsetPagination: {size: 5}
                 }) {
                 pageInfo {
-                    total
+                    offsetPagination {
+                        total
+                    }
                 }
                 nodes {
                     ... on Post {
@@ -104,7 +106,10 @@ class PostPaginationTest extends \Codeception\TestCase\WPTestCase
         ',
         ]);
 
-        $total = $res['data']['contentNodes']['pageInfo']['total'];
+        $total =
+            $res['data']['contentNodes']['pageInfo']['offsetPagination'][
+                'total'
+            ];
         $this->assertEquals(11, $total);
     }
 
