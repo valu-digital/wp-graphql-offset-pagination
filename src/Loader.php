@@ -26,12 +26,42 @@ class Loader
             2
         );
 
-        // add_filter(
-        //     'graphql_connection_query_args',
-        //     [$this, 'op_query_args'],
-        //     10,
-        //     2
-        // );
+        add_filter(
+            'graphql_connection_page_info',
+            [$this, 'op_graphql_connection_page_info'],
+            10,
+            2
+        );
+
+        add_filter(
+            'graphql_connection',
+            [$this, 'op_graphql_connection'],
+            10,
+            2
+        );
+    }
+
+    function op_graphql_connection(array $connection, $resolver)
+    {
+        $args = $resolver->get_query_args();
+        if (isset($args['graphql_args']['where']['offsetPagination'])) {
+            $connection['nodes'] = $resolver->get_items();
+        }
+        return $connection;
+    }
+
+    function op_graphql_connection_page_info($page_info, $resolver)
+    {
+        $query = $resolver->get_query();
+        $page_info['total'] = $query->found_posts;
+
+        // $page_info['previousPage'] = null;
+        // $page_info['nextPage'] = null;
+        // $page_info['totalPages'] = null;
+        // $page_info['startCursor'] = null;
+        // $page_info['endCursor'] = null;
+
+        return $page_info;
     }
 
     function op_map_offset_to_query_args(array $query_args, array $where_args)
@@ -52,6 +82,10 @@ class Loader
 
     function op_register_types()
     {
+        register_graphql_field('WPPageInfo', 'total', [
+            'type' => 'Int',
+        ]);
+
         register_graphql_input_type('OffsetPagination', [
             'description' => __('lala', 'wp-graphql-offet-pagination'),
             'fields' => [
@@ -82,49 +116,3 @@ class Loader
         );
     }
 }
-
-add_filter(
-    'graphql_connection_page_info',
-    function ($page_info, $resolver) {
-        $query = $resolver->get_query();
-        $page_info['total'] = $query->found_posts;
-
-        $page_info['previousPage'] = null;
-        $page_info['nextPage'] = null;
-        $page_info['totalPages'] = null;
-        $page_info['startCursor'] = null;
-        $page_info['endCursor'] = null;
-
-        return $page_info;
-    },
-    10,
-    2
-);
-
-add_action('graphql_register_types', function () {
-    register_graphql_field('WPPageInfo', 'total', [
-        'type' => 'Int',
-    ]);
-});
-
-// add_filter(
-//     'graphql_connection_nodes',
-//     function ($nodes, $resolver) {
-//         return $resolver->get_items();
-//     },
-//     10,
-//     2
-// );
-
-add_filter(
-    'graphql_connection',
-    function (array $connection, $resolver) {
-        $args = $resolver->get_query_args();
-        if (isset($args['graphql_args']['where']['offsetPagination'])) {
-            $connection['nodes'] = $resolver->get_items();
-        }
-        return $connection;
-    },
-    10,
-    2
-);

@@ -1,6 +1,6 @@
 <?php
 
-class ExampleTest extends \Codeception\TestCase\WPTestCase
+class PaginationTest extends \Codeception\TestCase\WPTestCase
 {
     /**
      * @var \WpunitTester
