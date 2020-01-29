@@ -34,7 +34,7 @@ class PostPaginationTest extends \Codeception\TestCase\WPTestCase
             unset($args['title_prefix']);
         }
 
-        foreach (range(0, $count) as $number) {
+        foreach (range(1, $count) as $number) {
             $number = str_pad($number, 2, '0', STR_PAD_LEFT);
             self::factory()->post->create(
                 array_merge(
@@ -72,11 +72,11 @@ class PostPaginationTest extends \Codeception\TestCase\WPTestCase
         $titles = \wp_list_pluck($nodes, 'title');
 
         $this->assertEquals($titles, [
-            'Post 00',
             'Post 01',
             'Post 02',
             'Post 03',
             'Post 04',
+            'Post 05',
         ]);
     }
 
@@ -110,7 +110,7 @@ class PostPaginationTest extends \Codeception\TestCase\WPTestCase
             $res['data']['contentNodes']['pageInfo']['offsetPagination'][
                 'total'
             ];
-        $this->assertEquals(11, $total);
+        $this->assertEquals(10, $total);
     }
 
     public function testContentNodesCanMoveOffset()
@@ -139,7 +139,7 @@ class PostPaginationTest extends \Codeception\TestCase\WPTestCase
 
         $this->assertEquals(5, count($titles));
         $this->assertEquals(
-            ['Post 01', 'Post 02', 'Post 03', 'Post 04', 'Post 05'],
+            ['Post 02', 'Post 03', 'Post 04', 'Post 05', 'Post 06'],
             $titles
         );
     }
@@ -171,7 +171,6 @@ class PostPaginationTest extends \Codeception\TestCase\WPTestCase
         $this->assertEquals(15, count($titles));
         $this->assertEquals(
             [
-                'Post 05',
                 'Post 06',
                 'Post 07',
                 'Post 08',
@@ -186,6 +185,7 @@ class PostPaginationTest extends \Codeception\TestCase\WPTestCase
                 'Post 17',
                 'Post 18',
                 'Post 19',
+                'Post 20',
             ],
             $titles
         );
@@ -225,13 +225,11 @@ class PostPaginationTest extends \Codeception\TestCase\WPTestCase
         $this->assertEquals(15, count($titles));
         $this->assertEquals(
             [
-                'Page 05',
                 'Page 06',
                 'Page 07',
                 'Page 08',
                 'Page 09',
                 'Page 10',
-                'Post 00',
                 'Post 01',
                 'Post 02',
                 'Post 03',
@@ -240,6 +238,8 @@ class PostPaginationTest extends \Codeception\TestCase\WPTestCase
                 'Post 06',
                 'Post 07',
                 'Post 08',
+                'Post 09',
+                'Post 10',
             ],
             $titles
         );
@@ -279,7 +279,7 @@ class PostPaginationTest extends \Codeception\TestCase\WPTestCase
 
         $this->assertEquals(5, count($titles));
         $this->assertEquals(
-            ['Post 02', 'Post 03', 'Post 04', 'Post 05', 'Post 06'],
+            ['Post 03', 'Post 04', 'Post 05', 'Post 06', 'Post 07'],
             $titles
         );
     }
@@ -307,11 +307,11 @@ class PostPaginationTest extends \Codeception\TestCase\WPTestCase
         $titles = \wp_list_pluck($nodes, 'title');
 
         $this->assertEquals($titles, [
-            'Post 00',
             'Post 01',
             'Post 02',
             'Post 03',
             'Post 04',
+            'Post 05',
         ]);
     }
 
@@ -338,11 +338,11 @@ class PostPaginationTest extends \Codeception\TestCase\WPTestCase
         $titles = \wp_list_pluck($nodes, 'title');
 
         $this->assertEquals($titles, [
-            'Post 02',
             'Post 03',
             'Post 04',
             'Post 05',
             'Post 06',
+            'Post 07',
         ]);
     }
 
@@ -373,11 +373,11 @@ class PostPaginationTest extends \Codeception\TestCase\WPTestCase
         $titles = \wp_list_pluck($nodes, 'title');
 
         $this->assertEquals($titles, [
-            'Test CPT 00',
             'Test CPT 01',
             'Test CPT 02',
             'Test CPT 03',
             'Test CPT 04',
+            'Test CPT 05',
         ]);
     }
 
@@ -407,11 +407,11 @@ class PostPaginationTest extends \Codeception\TestCase\WPTestCase
         $titles = \wp_list_pluck($nodes, 'title');
 
         $this->assertEquals($titles, [
-            'Test CPT 02',
             'Test CPT 03',
             'Test CPT 04',
             'Test CPT 05',
             'Test CPT 06',
+            'Test CPT 07',
         ]);
     }
 }

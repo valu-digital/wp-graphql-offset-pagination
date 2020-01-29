@@ -22,7 +22,7 @@ class UserPaginationTest extends \Codeception\TestCase\WPTestCase
             unset($args['name_prefix']);
         }
 
-        foreach (range(0, $count) as $number) {
+        foreach (range(1, $count) as $number) {
             $number = str_pad($number, 2, '0', STR_PAD_LEFT);
             self::factory()->user->create(
                 array_merge(
@@ -63,10 +63,10 @@ class UserPaginationTest extends \Codeception\TestCase\WPTestCase
         $this->assertEquals(
             [
                 'admin',
-                'test-user-00',
                 'test-user-01',
                 'test-user-02',
                 'test-user-03',
+                'test-user-04',
             ],
             $names
         );
@@ -99,11 +99,11 @@ class UserPaginationTest extends \Codeception\TestCase\WPTestCase
         $this->assertEquals(5, count($names));
         $this->assertEquals(
             [
-                'test-user-02',
                 'test-user-03',
                 'test-user-04',
                 'test-user-05',
                 'test-user-06',
+                'test-user-07',
             ],
             $names
         );
@@ -136,11 +136,11 @@ class UserPaginationTest extends \Codeception\TestCase\WPTestCase
         $this->assertEquals(5, count($names));
         $this->assertEquals(
             [
-                'test-user-14',
                 'test-user-15',
                 'test-user-16',
                 'test-user-17',
                 'test-user-18',
+                'test-user-19',
             ],
             $names
         );
