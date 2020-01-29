@@ -3,6 +3,7 @@
 namespace WPGraphQL\Extensions\OffsetPagination;
 
 use WPGraphQL\Data\Connection\AbstractConnectionResolver;
+use WPGraphQL\Data\Connection\UserConnectionResolver;
 
 class Loader
 {
@@ -70,7 +71,15 @@ class Loader
     static function get_page_size(AbstractConnectionResolver $resolver)
     {
         $args = $resolver->get_query_args();
-        $size = $args['graphql_args']['where']['offsetPagination']['size'] ?? 0;
+        $size = 0;
+
+        if ($resolver instanceof UserConnectionResolver) {
+            $size = $args['offsetPagination']['size'] ?? 0;
+        } else {
+            // post connection
+            $size =
+                $args['graphql_args']['where']['offsetPagination']['size'] ?? 0;
+        }
         return intval($size);
     }
 
@@ -83,6 +92,11 @@ class Loader
     static function is_offset_resolver(AbstractConnectionResolver $resolver)
     {
         $args = $resolver->get_query_args();
+
+        if ($resolver instanceof UserConnectionResolver) {
+            return isset($args['offsetPagination']);
+        }
+
         return isset($args['graphql_args']['where']['offsetPagination']);
     }
 
@@ -188,7 +202,8 @@ class Loader
         }
 
         if (isset($where_args['offsetPagination']['size'])) {
-            $query_args['number'] = $where_args['offsetPagination']['size'];
+            $query_args['number'] =
+                intval($where_args['offsetPagination']['size']) + 1;
         }
 
         return $query_args;

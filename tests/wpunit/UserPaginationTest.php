@@ -145,4 +145,141 @@ class UserPaginationTest extends \Codeception\TestCase\WPTestCase
             $names
         );
     }
+
+    public function testHasMoreWithoutOffset()
+    {
+        $this->createUsers(10);
+        wp_set_current_user(1);
+
+        $res = graphql([
+            'query' => '
+            query Users {
+                users(where: {
+                    orderby: {field: DISPLAY_NAME, order: ASC},
+                    offsetPagination: {size: 5}
+                }) {
+                pageInfo {
+                    offsetPagination {
+                        hasMore
+                    }
+                }
+                nodes {
+                    name
+                   }
+                }
+            }
+        ',
+        ]);
+
+        $this->assertEquals('', $res['errors'][0]['message'] ?? '');
+        $nodes = $res['data']['users']['nodes'];
+        $names = \wp_list_pluck($nodes, 'name');
+
+        $this->assertEquals(5, count($names));
+        $this->assertEquals(
+            [
+                'admin',
+                'test-user-01',
+                'test-user-02',
+                'test-user-03',
+                'test-user-04',
+            ],
+            $names
+        );
+
+        $has_more =
+            $res['data']['users']['pageInfo']['offsetPagination']['hasMore'];
+        $this->assertEquals(true, $has_more);
+    }
+
+    public function testHasMoreWithOffsetOne()
+    {
+        $this->createUsers(10);
+        wp_set_current_user(1);
+
+        $res = graphql([
+            'query' => '
+            query Users {
+                users(where: {
+                    orderby: {field: DISPLAY_NAME, order: ASC},
+                    offsetPagination: {size: 5, offset: 1}
+                }) {
+                pageInfo {
+                    offsetPagination {
+                        hasMore
+                    }
+                }
+                nodes {
+                    name
+                   }
+                }
+            }
+        ',
+        ]);
+
+        $this->assertEquals('', $res['errors'][0]['message'] ?? '');
+        $nodes = $res['data']['users']['nodes'];
+        $names = \wp_list_pluck($nodes, 'name');
+
+        $this->assertEquals(5, count($names));
+        $this->assertEquals(
+            [
+                'test-user-01',
+                'test-user-02',
+                'test-user-03',
+                'test-user-04',
+                'test-user-05',
+            ],
+            $names
+        );
+
+        $has_more =
+            $res['data']['users']['pageInfo']['offsetPagination']['hasMore'];
+        $this->assertEquals(true, $has_more);
+    }
+
+    public function testHasMoreFalseAtEnd()
+    {
+        $this->createUsers(10);
+        wp_set_current_user(1);
+
+        $res = graphql([
+            'query' => '
+            query Users {
+                users(where: {
+                    orderby: {field: DISPLAY_NAME, order: ASC},
+                    offsetPagination: {size: 5, offset: 6}
+                }) {
+                pageInfo {
+                    offsetPagination {
+                        hasMore
+                    }
+                }
+                nodes {
+                    name
+                   }
+                }
+            }
+        ',
+        ]);
+
+        $this->assertEquals('', $res['errors'][0]['message'] ?? '');
+        $nodes = $res['data']['users']['nodes'];
+        $names = \wp_list_pluck($nodes, 'name');
+
+        $this->assertEquals(
+            [
+                'test-user-06',
+                'test-user-07',
+                'test-user-08',
+                'test-user-09',
+                'test-user-10',
+            ],
+            $names
+        );
+
+        $has_more =
+            $res['data']['users']['pageInfo']['offsetPagination']['hasMore'];
+        $this->assertEquals(false, $has_more);
+    }
 }
