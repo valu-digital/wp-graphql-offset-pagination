@@ -1,0 +1,68 @@
+#!/bin/sh
+
+project="valu-digital/wp-graphql-offset-pagination"
+version_file="plugin.php"
+
+set -eu
+
+help() {
+    >&2 echo "
+    Create new release. Creates git tag and github release
+    "
+}
+
+if [ "${1:-}" = "-h" -o "${1:-}" = "--help" ]; then
+    help
+    exit 1
+fi
+
+if [ "$(uname)" != "Darwin" ]; then
+    echo "Sorry, this script only works on macOS for now."
+    exit 1
+fi
+
+if [ "$(git status . --porcelain)" != "" ]; then
+    echo "Dirty git. Commit changes"
+    exit 1
+fi
+
+if [ "$(git rev-parse --abbrev-ref HEAD)" != "master" ]; then
+    echo "Not on the master branch"
+    exit 2
+fi
+
+git push origin master:master
+
+current_version="$(cat $version_file | sed -En 's/.*Version: ([^ ]*)/\1/p')"
+
+echo "Current version is: $current_version"
+
+read -p "New version> " new_version
+
+
+sed -E -i  "" "s/(.*Version:) .*/\1 ${new_version}/" $version_file
+
+rm -rf composer.lock vendor/
+composer dump-autoload
+
+git add "$version_file"  vendor
+git commit -m "Release v${new_version}"
+git tag -a "v${new_version}" -m "Release v${new_version}"
+
+git push origin master:master
+git push origin --tags
+git push origin master:stable -f
+
+range="v${new_version}...v${current_version}"
+
+echo
+echo
+git log --format='  - %s %h' $range | sed 1,1d
+echo
+echo
+echo "All changes https://github.com/${project}/compare/${range}"
+echo
+echo
+
+set -x
+open "https://github.com/${project}/releases/new?title=v${new_version}&tag=v${new_version}"
