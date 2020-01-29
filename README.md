@@ -23,6 +23,15 @@ query Posts {
     posts(where: { offsetPagination: { size: 10, offset: 10 } }) {
         pageInfo {
             offsetPagination {
+                # Boolean whether there is more nodes in this connection.
+                # Eg. you can increment offset to get more nodes.
+                # Use this to implement "fetch more" buttons etc.
+                hasMore
+
+                # True when there are previous nodes
+                # Eg. you can decrement offset to get previous nodes.
+                hasPrevious
+
                 # Get the total node count in the connection. Using this
                 # field activates total calculations which will make your
                 # queries slower. Use with caution.
