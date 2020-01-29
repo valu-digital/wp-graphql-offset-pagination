@@ -2,6 +2,8 @@
 
 namespace WPGraphQL\Extensions\OffsetPagination;
 
+use WPGraphQL\Data\Connection\AbstractConnectionResolver;
+
 class Loader
 {
     public static function init()
@@ -53,6 +55,8 @@ class Loader
             10,
             5
         );
+
+        add_filter('graphql_connection_nodes', [$this, 'op_get_nodes'], 10, 2);
     }
 
     /**
@@ -74,6 +78,37 @@ class Loader
     }
 
     /**
+     * Returns true when the resolver is resolving offset pagination
+     */
+    function get_page_size(AbstractConnectionResolver $resolver)
+    {
+        $args = $resolver->get_query_args();
+        $size = $args['graphql_args']['where']['offsetPagination']['size'] ?? 0;
+        return intval($size);
+    }
+
+    function get_offset_nodes(AbstractConnectionResolver $resolver)
+    {
+        $size = $this->get_page_size($resolver);
+        return array_slice($resolver->get_items(), 0, $size);
+    }
+
+    function op_get_nodes($nodes, AbstractConnectionResolver $resolver)
+    {
+        if ($this->is_offset_resolver($resolver)) {
+            return $this->get_offset_nodes($resolver);
+        }
+
+        return $nodes;
+    }
+
+    function is_offset_resolver(AbstractConnectionResolver $resolver)
+    {
+        $args = $resolver->get_query_args();
+        return isset($args['graphql_args']['where']['offsetPagination']);
+    }
+
+    /**
      * By default wp-graphql slices the "nodes" in the connection nodes based
      * on the "first" input field:
      *
@@ -83,20 +118,27 @@ class Loader
      * It defaults to 10 which interferes with offset pagination. This filter
      * restores the nodes to original items when offset pagination is in use.
      */
-    function op_graphql_connection(array $connection, $resolver)
-    {
-        $args = $resolver->get_query_args();
-        if (isset($args['graphql_args']['where']['offsetPagination'])) {
-            $connection['nodes'] = $resolver->get_items();
+    function op_graphql_connection(
+        array $connection,
+        AbstractConnectionResolver $resolver
+    ) {
+        if ($this->is_offset_resolver($resolver)) {
+            $connection['nodes'] = $this->get_offset_nodes($resolver);
         }
+
         return $connection;
     }
 
-    function op_graphql_connection_page_info($page_info, $resolver)
-    {
+    function op_graphql_connection_page_info(
+        $page_info,
+        AbstractConnectionResolver $resolver
+    ) {
+        $size = $this->get_page_size($resolver);
         $query = $resolver->get_query();
+        $args = $resolver->get_query_args();
         $page_info['offsetPagination'] = [
             'total' => $query->found_posts,
+            'hasMore' => count($resolver->get_items()) > $size,
         ];
         return $page_info;
     }
@@ -110,8 +152,10 @@ class Loader
         }
 
         if (isset($where_args['offsetPagination']['size'])) {
+            // Fetch size+1 to be able calculate "hasMore" field without
+            // slowly counting full totals.
             $query_args['posts_per_page'] =
-                $where_args['offsetPagination']['size'];
+                intval($where_args['offsetPagination']['size']) + 1;
         }
 
         return $query_args;
@@ -148,6 +192,13 @@ class Loader
                     'type' => 'Int',
                     'description' => __(
                         'Total amount of nodes in this connection',
+                        'wp-graphql-offset-pagination'
+                    ),
+                ],
+                'hasMore' => [
+                    'type' => 'Boolean',
+                    'description' => __(
+                        'True if there is one or more nodes available in this connection. Eg. you can increase the offset at least by one.',
                         'wp-graphql-offset-pagination'
                     ),
                 ],
