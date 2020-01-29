@@ -16,54 +16,90 @@ class Loader
     {
         add_action(
             'graphql_register_types',
-            [$this, 'op_register_types'],
+            [$this, 'op_action_register_types'],
             9,
             0
         );
 
         add_filter(
             'graphql_map_input_fields_to_wp_query',
-            [$this, 'op_map_offset_to_wp_query_args'],
+            [$this, 'op_filter_map_offset_to_wp_query_args'],
             10,
             2
         );
 
         add_filter(
             'graphql_map_input_fields_to_wp_user_query',
-            [$this, 'op_map_offset_to_wp_user_query_args'],
+            [$this, 'op_filter_map_offset_to_wp_user_query_args'],
             10,
             2
         );
 
         add_filter(
             'graphql_connection_page_info',
-            [$this, 'op_graphql_connection_page_info'],
+            [$this, 'op_filter_graphql_connection_page_info'],
             10,
             2
         );
 
         add_filter(
             'graphql_connection',
-            [$this, 'op_graphql_connection'],
+            [$this, 'op_filter_graphql_connection'],
             10,
             2
         );
 
         add_filter(
             'graphql_post_object_connection_query_args',
-            [$this, 'op_graphql_post_object_connection_query_args'],
+            [$this, 'op_filter_graphql_post_object_connection_query_args'],
             10,
             5
         );
 
-        add_filter('graphql_connection_nodes', [$this, 'op_get_nodes'], 10, 2);
+        add_filter(
+            'graphql_connection_nodes',
+            [$this, 'op_filter_get_nodes'],
+            10,
+            2
+        );
+    }
+
+    /**
+     * Returns true when the resolver is resolving offset pagination
+     */
+    static function get_page_size(AbstractConnectionResolver $resolver)
+    {
+        $args = $resolver->get_query_args();
+        $size = $args['graphql_args']['where']['offsetPagination']['size'] ?? 0;
+        return intval($size);
+    }
+
+    static function get_offset_nodes(AbstractConnectionResolver $resolver)
+    {
+        $size = self::get_page_size($resolver);
+        return array_slice($resolver->get_items(), 0, $size);
+    }
+
+    static function is_offset_resolver(AbstractConnectionResolver $resolver)
+    {
+        $args = $resolver->get_query_args();
+        return isset($args['graphql_args']['where']['offsetPagination']);
+    }
+
+    function op_filter_get_nodes($nodes, AbstractConnectionResolver $resolver)
+    {
+        if (self::is_offset_resolver($resolver)) {
+            return self::get_offset_nodes($resolver);
+        }
+
+        return $nodes;
     }
 
     /**
      * Lazily enable total calculations only when they are asked in the
      * selection set.
      */
-    function op_graphql_post_object_connection_query_args(
+    function op_filter_graphql_post_object_connection_query_args(
         $query_args,
         $source,
         $args,
@@ -77,35 +113,15 @@ class Loader
         return $query_args;
     }
 
-    /**
-     * Returns true when the resolver is resolving offset pagination
-     */
-    function get_page_size(AbstractConnectionResolver $resolver)
+    static function add_post_type_fields(\WP_Post_Type $post_type_object)
     {
-        $args = $resolver->get_query_args();
-        $size = $args['graphql_args']['where']['offsetPagination']['size'] ?? 0;
-        return intval($size);
-    }
-
-    function get_offset_nodes(AbstractConnectionResolver $resolver)
-    {
-        $size = $this->get_page_size($resolver);
-        return array_slice($resolver->get_items(), 0, $size);
-    }
-
-    function op_get_nodes($nodes, AbstractConnectionResolver $resolver)
-    {
-        if ($this->is_offset_resolver($resolver)) {
-            return $this->get_offset_nodes($resolver);
-        }
-
-        return $nodes;
-    }
-
-    function is_offset_resolver(AbstractConnectionResolver $resolver)
-    {
-        $args = $resolver->get_query_args();
-        return isset($args['graphql_args']['where']['offsetPagination']);
+        $type = ucfirst($post_type_object->graphql_single_name);
+        register_graphql_fields("RootQueryTo${type}ConnectionWhereArgs", [
+            'offsetPagination' => [
+                'type' => 'OffsetPagination',
+                'description' => "Paginate ${type}s with offsets",
+            ],
+        ]);
     }
 
     /**
@@ -118,22 +134,22 @@ class Loader
      * It defaults to 10 which interferes with offset pagination. This filter
      * restores the nodes to original items when offset pagination is in use.
      */
-    function op_graphql_connection(
+    function op_filter_graphql_connection(
         array $connection,
         AbstractConnectionResolver $resolver
     ) {
-        if ($this->is_offset_resolver($resolver)) {
-            $connection['nodes'] = $this->get_offset_nodes($resolver);
+        if (self::is_offset_resolver($resolver)) {
+            $connection['nodes'] = self::get_offset_nodes($resolver);
         }
 
         return $connection;
     }
 
-    function op_graphql_connection_page_info(
+    function op_filter_graphql_connection_page_info(
         $page_info,
         AbstractConnectionResolver $resolver
     ) {
-        $size = $this->get_page_size($resolver);
+        $size = self::get_page_size($resolver);
         $query = $resolver->get_query();
         $args = $resolver->get_query_args();
         $offset = $args['offsetPagination']['offset'] ?? 0;
@@ -145,7 +161,7 @@ class Loader
         return $page_info;
     }
 
-    function op_map_offset_to_wp_query_args(
+    function op_filter_map_offset_to_wp_query_args(
         array $query_args,
         array $where_args
     ) {
@@ -163,7 +179,7 @@ class Loader
         return $query_args;
     }
 
-    function op_map_offset_to_wp_user_query_args(
+    function op_filter_map_offset_to_wp_user_query_args(
         array $query_args,
         array $where_args
     ) {
@@ -178,10 +194,10 @@ class Loader
         return $query_args;
     }
 
-    function op_register_types()
+    function op_action_register_types()
     {
         foreach (\WPGraphQL::get_allowed_post_types() as $post_type) {
-            $this->add_post_type_fields(get_post_type_object($post_type));
+            self::add_post_type_fields(get_post_type_object($post_type));
         }
 
         register_graphql_object_type('OffsetPaginationPageInfo', [
@@ -262,15 +278,5 @@ class Loader
                 'description' => 'Paginate users with offsets',
             ]
         );
-    }
-    function add_post_type_fields(\WP_Post_Type $post_type_object)
-    {
-        $type = ucfirst($post_type_object->graphql_single_name);
-        register_graphql_fields("RootQueryTo${type}ConnectionWhereArgs", [
-            'offsetPagination' => [
-                'type' => 'OffsetPagination',
-                'description' => "Paginate ${type}s with offsets",
-            ],
-        ]);
     }
 }
