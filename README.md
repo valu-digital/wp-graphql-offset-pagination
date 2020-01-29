@@ -56,7 +56,7 @@ If you use composer you can install it from Packagist
 Otherwise you can clone it from Github to your plugins using the stable branch
 
     cd wp-content/plugins
-    git clone --branch stable https://github.com/valu-digital//wp-graphql-offset-pagination.git
+    git clone --branch stable https://github.com/valu-digital/wp-graphql-offset-pagination.git
 
 ## Prior Art
 
