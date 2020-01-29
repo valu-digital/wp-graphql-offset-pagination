@@ -196,4 +196,127 @@ class PageInfoTest extends \Codeception\TestCase\WPTestCase
             $res['data']['posts']['pageInfo']['offsetPagination']['hasMore'];
         $this->assertEquals(false, $has_more);
     }
+
+    public function testHasPreviousFalseWithoutOffset()
+    {
+        $this->createPosts(10);
+
+        $res = graphql([
+            'query' => '
+            query Posts {
+                posts(where: {
+                    orderby: {field: TITLE, order: ASC},
+                    offsetPagination: {size: 5}
+                }) {
+                pageInfo {
+                    offsetPagination {
+                        hasPrevious
+                    }
+                }
+                nodes {
+                    title
+                  }
+                }
+            }
+        ',
+        ]);
+
+        $has_previous =
+            $res['data']['posts']['pageInfo']['offsetPagination'][
+                'hasPrevious'
+            ];
+        $this->assertEquals(false, $has_previous);
+
+        $nodes = $res['data']['posts']['nodes'];
+        $titles = \wp_list_pluck($nodes, 'title');
+        $this->assertEquals($titles, [
+            'Post 01',
+            'Post 02',
+            'Post 03',
+            'Post 04',
+            'Post 05',
+        ]);
+    }
+
+    public function testHasPreviousFalseWithZeroOffset()
+    {
+        $this->createPosts(10);
+
+        $res = graphql([
+            'query' => '
+            query Posts {
+                posts(where: {
+                    orderby: {field: TITLE, order: ASC},
+                    offsetPagination: {size: 5, offset: 0}
+                }) {
+                pageInfo {
+                    offsetPagination {
+                        hasPrevious
+                    }
+                }
+                nodes {
+                    title
+                  }
+                }
+            }
+        ',
+        ]);
+
+        $has_previous =
+            $res['data']['posts']['pageInfo']['offsetPagination'][
+                'hasPrevious'
+            ];
+        $this->assertEquals(false, $has_previous);
+
+        $nodes = $res['data']['posts']['nodes'];
+        $titles = \wp_list_pluck($nodes, 'title');
+        $this->assertEquals($titles, [
+            'Post 01',
+            'Post 02',
+            'Post 03',
+            'Post 04',
+            'Post 05',
+        ]);
+    }
+
+    public function testHasPreviousTrueWithOffsetOne()
+    {
+        $this->createPosts(10);
+
+        $res = graphql([
+            'query' => '
+            query Posts {
+                posts(where: {
+                    orderby: {field: TITLE, order: ASC},
+                    offsetPagination: {size: 5, offset: 1}
+                }) {
+                pageInfo {
+                    offsetPagination {
+                        hasPrevious
+                    }
+                }
+                nodes {
+                    title
+                  }
+                }
+            }
+        ',
+        ]);
+
+        $has_previous =
+            $res['data']['posts']['pageInfo']['offsetPagination'][
+                'hasPrevious'
+            ];
+        $this->assertEquals(true, $has_previous);
+
+        $nodes = $res['data']['posts']['nodes'];
+        $titles = \wp_list_pluck($nodes, 'title');
+        $this->assertEquals($titles, [
+            'Post 02',
+            'Post 03',
+            'Post 04',
+            'Post 05',
+            'Post 06',
+        ]);
+    }
 }

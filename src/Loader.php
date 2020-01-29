@@ -136,9 +136,11 @@ class Loader
         $size = $this->get_page_size($resolver);
         $query = $resolver->get_query();
         $args = $resolver->get_query_args();
+        $offset = $args['offsetPagination']['offset'] ?? 0;
         $page_info['offsetPagination'] = [
             'total' => $query->found_posts,
             'hasMore' => count($resolver->get_items()) > $size,
+            'hasPrevious' => $offset > 0,
         ];
         return $page_info;
     }
@@ -199,6 +201,13 @@ class Loader
                     'type' => 'Boolean',
                     'description' => __(
                         'True if there is one or more nodes available in this connection. Eg. you can increase the offset at least by one.',
+                        'wp-graphql-offset-pagination'
+                    ),
+                ],
+                'hasPrevious' => [
+                    'type' => 'Boolean',
+                    'description' => __(
+                        'True when offset can be decresed eg. offset is 0<',
                         'wp-graphql-offset-pagination'
                     ),
                 ],
