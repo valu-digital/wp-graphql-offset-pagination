@@ -73,6 +73,7 @@ class PageInfoTest extends \Codeception\TestCase\WPTestCase
 
         $has_more =
             $res['data']['posts']['pageInfo']['offsetPagination']['hasMore'];
+
         $this->assertEquals(true, $has_more);
 
         $nodes = $res['data']['posts']['nodes'];

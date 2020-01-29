@@ -282,4 +282,36 @@ class UserPaginationTest extends \Codeception\TestCase\WPTestCase
             $res['data']['users']['pageInfo']['offsetPagination']['hasMore'];
         $this->assertEquals(false, $has_more);
     }
+
+    public function testCanGetTotal()
+    {
+        $this->createUsers(10);
+        wp_set_current_user(1);
+
+        $res = graphql([
+            'query' => '
+            query Users {
+                users(where: {
+                    orderby: {field: DISPLAY_NAME, order: ASC},
+                    offsetPagination: {size: 5, offset: 2}
+                }) {
+                pageInfo {
+                    offsetPagination {
+                        total
+                    }
+                }
+                nodes {
+                    name
+                   }
+                }
+            }
+        ',
+        ]);
+
+        $this->assertEquals('', $res['errors'][0]['message'] ?? '');
+
+        $total = $res['data']['users']['pageInfo']['offsetPagination']['total'];
+
+        $this->assertEquals(11, $total);
+    }
 }

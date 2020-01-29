@@ -51,8 +51,8 @@ class Loader
         );
 
         add_filter(
-            'graphql_post_object_connection_query_args',
-            [$this, 'op_filter_graphql_post_object_connection_query_args'],
+            'graphql_connection_query_args',
+            [$this, 'op_filter_graphql_connection_query_args'],
             10,
             5
         );
@@ -113,17 +113,26 @@ class Loader
      * Lazily enable total calculations only when they are asked in the
      * selection set.
      */
-    function op_filter_graphql_post_object_connection_query_args(
-        $query_args,
-        $source,
-        $args,
-        $context,
-        \GraphQL\Type\Definition\ResolveInfo $info
+    function op_filter_graphql_connection_query_args(
+        array $query_args,
+        AbstractConnectionResolver $resolver
     ) {
+        $info = $resolver->getInfo();
         $selection_set = $info->getFieldSelection(2);
-        if (isset($selection_set['pageInfo']['offsetPagination']['total'])) {
+
+        if (!isset($selection_set['pageInfo']['offsetPagination']['total'])) {
+            // get out if not requesting total counting
+            return $query_args;
+        }
+
+        if ($resolver instanceof UserConnectionResolver) {
+            // Enable slow total counting for user connections
+            $query_args['count_total'] = true;
+        } else {
+            // Enable slow total counting for posts connections
             $query_args['no_found_rows'] = false;
         }
+
         return $query_args;
     }
 
@@ -167,8 +176,17 @@ class Loader
         $query = $resolver->get_query();
         $args = $resolver->get_query_args();
         $offset = $args['offsetPagination']['offset'] ?? 0;
+
+        $total = null;
+
+        if ($query instanceof \WP_Query) {
+            $total = $query->found_posts;
+        } elseif ($query instanceof \WP_User_Query) {
+            $total = $query->total_users;
+        }
+
         $page_info['offsetPagination'] = [
-            'total' => $query->found_posts,
+            'total' => $total,
             'hasMore' => count($resolver->get_items()) > $size,
             'hasPrevious' => $offset > 0,
         ];
