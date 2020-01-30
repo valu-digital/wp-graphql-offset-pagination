@@ -191,14 +191,14 @@ WPGraphQL should support all features supported by WP Query. Including
 `meta_query` and `tax_query`.
 
 But that's only an "Advanced Level" WPGraphQL usage and this article is about
-the "Very Advanced Level" so we'll continue to write custom SQL 😱
+the "Very Advanced Level" so we'll continue to write some custom SQL 😱
 
 ## Generating SQL in the WP Query
 
 Since we only moved the `prioritize` field to a query var that is not
 understood by WP Query we must actually teach WP Query how to handle it. We
-can do that by hooking in the low level `post_clauses` hook that allow us to
-manipulate the SQL query generation inside the WP Query instance.
+can do that by hooking in the low level `post_clauses` filter that allow us
+to manipulate the SQL query generation inside the WP Query instance.
 
 This were we get into the territory that Cursors cannot handle. Specifically
 **because we mess with the `orderby` clause**.
@@ -330,6 +330,9 @@ The `WHEN` statement for it would be something like this
 ```sql
 WHEN DATE( FROM_UNIXTIME( $join_name.meta_value ) ) = DATE( NOW() )
 ```
+
+This works because the `DATE` type in SQL does not contain the time part and
+casting to it just drops it so if it equals to current date it's today!
 
 I'll leave that implementation as an exercise to you.
 
