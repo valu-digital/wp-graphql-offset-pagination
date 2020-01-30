@@ -201,7 +201,7 @@ can do that by hooking in the low level `post_clauses` hook that allow us to
 manipulate the SQL query generation inside the WP Query instance.
 
 This were we get into the territory that Cursors cannot handle. Specifically
-because we mess with the `orderby` clause.
+**because we mess with the `orderby` clause**.
 
 ```php
 add_filter(
@@ -353,8 +353,8 @@ not have to read the rows before the cursor at all. Just offseting the query
 is a lot more work.
 
 The cursor is implemented as a `WHERE` clause using the auto incremented row
-id. So technically the cursor is a post id for `wp_posts` table. But when a
-`ORDER` clause is added it must be implemented as a cursor too!
+id. So technically the cursor is a post id for `wp_posts` table. But **when a
+`ORDER` clause is added it must be implemented as a cursor too!**
 
 Here's an example of a SQL query for order by `post_title`, `modified_date`,
 `created_date` and `id`:
@@ -378,8 +378,8 @@ need to be evaluated on each row (not 100% sure on this!).
 
 Luckily the cursor builder in WPGraphQL handles this recursive SQL generation
 for you for the standard WP Query uses but when you modify the SQL you must
-be very careful. But not all modifications are bad. For example just adding
-extra filtering the to the `$fields['where']` should be ok. For the rest
+be very careful. But not all modifications are bad. For example **just adding
+extra filtering the to the `$fields['where']` should be ok**. For the rest
 there is the `wp-graphql-offset-pagination` enables all the crazy use cases
 like this. Albeit beign bit slower.
 
