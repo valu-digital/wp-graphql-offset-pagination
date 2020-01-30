@@ -18,14 +18,15 @@ be implemented with a clever use of `CASE`, `FROM_UNIXTIME` `DATE` and
 
 This tutorial is very advanced level. If you get through it and understand
 everything I bet you can safely call yourself a "senior wp-graphql
-developer". I assume you known basics of WP development, WP-CLI and WPGraphQL.
+developer". I assume you known basics of WP development, WP-CLI, SQL and
+WPGraphQL.
 
 For purposes of this tutorial we simplify the example a bit so we don't have
 to deal with changing time.
 
 Lets create some testing data.
 
-run it with `wp eval-file create-data.php`
+Run this with `wp eval-file create-data.php`
 
 ```php
 foreach (range('A', 'Z') as $num => $char) {
@@ -52,7 +53,7 @@ it's in a even or odd position in the alphabet to `example` meta.
 We will be creating a custom graphql input field that prioritizes ordering
 based on the `example` meta.
 
-But first we'll want to expose the `my_field` meta to the GraphQL schema for
+But first we'll want to expose the `example` meta to the GraphQL schema for
 debugging purposes.
 
 ```php
@@ -98,7 +99,9 @@ Next we'll need to add the input field which can be used to prioritize the
 posts. WPGraphQL allows PHP developers to extend the `where` input field. So
 in the `graphql_register_types` action we can extend the
 `RootQueryToPostConnectionWhereArgs` type. You can find out this type name by
-looking it up from the wp-graphiql documentation browser.
+looking it up from [wp-graphiql][].
+
+[wp-graphiql]: https://github.com/wp-graphql/wp-graphiql
 
 ```php
 add_action(
