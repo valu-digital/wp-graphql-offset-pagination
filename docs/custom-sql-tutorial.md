@@ -3,8 +3,8 @@
 Although this tutorial in is the `wp-graphql-offset-pagination` repository
 this tutorial contains valuable information for devs extending WPGraphQL
 filtering / ordering with just plain WPGraphQL. We'll discuss what the limits
-are and when the WPGraphQL cursors fall short. We also only use APIs exposed
-by WPGraphQL and WP itself.
+are and when the WPGraphQL cursors fall short. We also only use PHP APIs
+exposed by WPGraphQL and WP itself.
 
 Here's a limit pushing use case:
 
@@ -319,33 +319,62 @@ END
 ```
 
 This is the magic that allows us to modify the ordering in SQL almost
-arbitrarily. With the CASE statement we can turn any SQL expression to a
+arbitrarily. With the `CASE` statement we can turn any SQL expression to a
 number which can be used in the ORDER statement.
 
 If you still remember the use case I mentioned in the begining, this method
 can be used to detect the "current day" and prioritize that.
 
-The WHEN statment for it would be something like this
+The `WHEN` statement for it would be something like this
 
 ```sql
-WHEN
-    DATE( FROM_UNIXTIME( $join_name.meta_value ) ) = DATE( NOW() )
-    AND $join_name.meta_key = '$meta_key'
+WHEN DATE( FROM_UNIXTIME( $join_name.meta_value ) ) = DATE( NOW() )
 ```
 
 I'll leave that implementation as an exercise to you.
 
 ## Cursors?
 
-Finally you might want to try you what happens you paginate with the core
-wp-graphql cursors (`first`, `after`, `pageInfo.endCursor`). The first page
-looks good, maybe the second one too but at some point it goes of the rails
-and misses some data.
+We're done coding-wise but since I've have your attention we'll dive a bit
+deeper into the Cursors in WPGraphQL.
 
-If you are interested why cursor pagination is a good idea despite of its limitiations
-I'd recommend you to read this article from Slack Engineering
+You might want to try you what happens you paginate with the WPGraphlQL
+cursors (`first`, `after`, `pageInfo.endCursor`). The first page looks good,
+maybe the second one too but at some point it goes of the rails and misses
+some data.
+
+If you are interested why cursor pagination is a good idea despite of its
+limitiations I'd recommend you to read this article from Slack Engineering
 
 <https://slack.engineering/evolving-api-pagination-at-slack-1c1f644f8e12>
 
-tl;dr it's faster on big data sets but unfortuntely heavy customization like
-this is really hard if not impossible.
+tl;dr it's faster on big data sets because with a cursor the database does
+not have to read the rows before the cursor at all. Just offseting the query
+is a lot more work.
+
+The cursor is implemented as a `WHERE` clause using the auto incremented row
+id. So technically the cursor is a post id for `wp_posts` table. But when a
+`ORDER` clause is added it must be implemented as a cursor too!
+
+Here's an example of order by title, modified_date, created_date and the id.
+
+```sql
+WHERE post_title >= $post_title_cursor
+      AND ( post_title > $post_title_cursor OR ( post_modified >= $post_modified_cursor
+            AND ( post_modified > $post_modified_cursor OR ( c3_post_created >= $post_created_cursor
+                AND ( post_created > $post_created_cursor OR id > :$post_id_cursor ) )
+            )
+        )
+    )
+ORDER BY post_title, post_modified, post_created, id
+```
+
+As you can see it is a recursive problem. You cannot modify this by stuffing
+some extra SQL in the `post_clauses` hook.
+
+Luckily the cursor builder in WPGraphQL handles this for you for the standard
+WP Query uses but when you modify the SQL you must be very careful. But not
+all modification are bad. For example just adding extra filtering the to the
+`$fields['where']` should be ok. For the rest there is the
+`wp-graphql-offset-pagination` enables all the crazy use cases like this.
+Albeit beign bit slower.
