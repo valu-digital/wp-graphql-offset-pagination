@@ -321,5 +321,5 @@ I'd recommend you to read this article from Slack Engineering
 
 <https://slack.engineering/evolving-api-pagination-at-slack-1c1f644f8e12>
 
-tl;dr it's faster on big data sets but unfortuntely customizing it like this
-is really hard if not impossible.
+tl;dr it's faster on big data sets but unfortuntely heavy customization like
+this is really hard if not impossible.
