@@ -187,7 +187,8 @@ $query_args['meta_query'] = [
 ];
 ```
 
-WPGraphQL should support all filtering features supported by WP Query. Including `meta_query` and `tax_query`.
+WPGraphQL should support all features supported by WP Query. Including
+`meta_query` and `tax_query`.
 
 But that's only an "Advanced Level" WPGraphQL usage and this article is about
 the "Very Advanced Level" so we'll continue to write custom SQL 😱
