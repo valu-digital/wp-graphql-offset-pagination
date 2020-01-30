@@ -353,8 +353,8 @@ not have to read the rows before the cursor at all. Just offseting the query
 is a lot more work.
 
 The cursor is implemented as a `WHERE` clause using the auto incremented row
-id. So technically the cursor is a post id for `wp_posts` table. But **when a
-`ORDER` clause is added it must be implemented as a cursor too!**
+id. So technically the cursor is a post id in the `wp_posts` table. But
+**when a `ORDER` clause is added it must be implemented as a cursor too!**
 
 Here's an example of a SQL query with cursors for order by `post_title`,
 `modified_date`, `created_date` and `id`:
