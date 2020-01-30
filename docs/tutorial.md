@@ -56,8 +56,8 @@ foreach (range('A', 'Z') as $num => $char) {
 This will create a post for each character in the alphabet and saves whether
 it's in a even or odd position in the alphabet to `example` meta.
 
-We will be creating a custom GraphQL Input Field that prioritizes ordering
-based on the `example` meta.
+**We will be creating a custom GraphQL Input Field that prioritizes ordering
+based on the `example` meta.**
 
 ## GraphQL Field for Custom Meta
 
