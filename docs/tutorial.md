@@ -362,7 +362,7 @@ Here's an example of a SQL query with cursors for order by `post_title`,
 ```sql
 WHERE post_title >= $post_title_cursor
       AND ( post_title > $post_title_cursor OR ( post_modified >= $post_modified_cursor
-            AND ( post_modified > $post_modified_cursor OR ( c3_post_created >= $post_created_cursor
+            AND ( post_modified > $post_modified_cursor OR ( post_created >= $post_created_cursor
                 AND ( post_created > $post_created_cursor OR id > :$post_id_cursor ) )
             )
         )
