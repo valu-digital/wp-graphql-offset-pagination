@@ -383,7 +383,7 @@ extra filtering the to the `$fields['where']` should be ok**. For the rest
 there is this `wp-graphql-offset-pagination` which enables all the crazy use
 cases like this. Albeit beign bit slower.
 
-If you have questions or something to add feel free to ping me on Twitter
-[@esamatti][] or open an issue on this repository.
+If you have questions or something to add/correct feel free to ping me on
+Twitter [@esamatti][] or open an issue on this repository.
 
 [@esamatti]: https://twitter.com/esamatti
