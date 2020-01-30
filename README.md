@@ -1,7 +1,7 @@
 # wp-graphql-offset-pagination
 
 Adds traditional offset pagination support to WPGraphQL. This useful only
-when you need to implement
+when you need to implement:
 
 -   Numbered links to the "pages"
 -   Ordering with custom SQL
