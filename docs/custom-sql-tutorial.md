@@ -189,7 +189,7 @@ add_filter(
         $fields['join'] .= $join;
 
         // Let's add a custom field with alias to the query which can be
-        // referenced in ordering.
+        // referenced in ordering. This is the magic. More on this later.
         $field_name = 'PRIORITIZE_ORDER';
         $field = " CASE
             WHEN $join_name.meta_key = '$meta_key'
