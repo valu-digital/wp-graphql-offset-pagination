@@ -335,7 +335,7 @@ I'll leave that implementation as an exercise to you.
 
 ## Cursors?
 
-We're done coding-wise but since I've have your attention we'll dive a bit
+We're done coding-wise but since I have your attention we'll dive a bit
 deeper into the Cursors in WPGraphQL.
 
 You might want to try you what happens you paginate with the WPGraphlQL

@@ -191,57 +191,6 @@ class PostPaginationTest extends \Codeception\TestCase\WPTestCase
         );
     }
 
-    public function testConentNodesCanHavePageBiggerThanDefaultCursorWithEdges()
-    {
-        $this->createPosts(25);
-
-        $res = graphql([
-            'query' => '
-            query Posts {
-                contentNodes(where: {
-                    orderby: {field: TITLE, order: ASC},
-                    offsetPagination: {size: 15, offset: 5}
-                }) {
-                edges {
-                    node {
-                        ... on Post {
-                            title
-                        }
-                      }
-                    }
-                }
-            }
-        ',
-        ]);
-
-        $edges = $res['data']['contentNodes']['edges'];
-        $titles = array_map(function($edge) {
-            return $edge['node']['title'];
-        }, $edges);
-
-        $this->assertEquals(15, count($titles));
-        $this->assertEquals(
-            [
-                'Post 06',
-                'Post 07',
-                'Post 08',
-                'Post 09',
-                'Post 10',
-                'Post 11',
-                'Post 12',
-                'Post 13',
-                'Post 14',
-                'Post 15',
-                'Post 16',
-                'Post 17',
-                'Post 18',
-                'Post 19',
-                'Post 20',
-            ],
-            $titles
-        );
-    }
-
     public function testContentNodesCanMixPostTypes()
     {
         $this->createPosts(10);
