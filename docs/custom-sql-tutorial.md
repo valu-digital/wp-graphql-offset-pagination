@@ -380,8 +380,8 @@ Luckily the cursor builder in WPGraphQL handles this recursive SQL generation
 for you for the standard WP Query uses but when you modify the SQL you must
 be very careful. But not all modifications are bad. For example **just adding
 extra filtering the to the `$fields['where']` should be ok**. For the rest
-there is the `wp-graphql-offset-pagination` enables all the crazy use cases
-like this. Albeit beign bit slower.
+there is this `wp-graphql-offset-pagination` which enables all the crazy use
+cases like this. Albeit beign bit slower.
 
 If you have questions or something to add feel free to ping me on Twitter
 [@esamatti][] or open an issue on this repository.
