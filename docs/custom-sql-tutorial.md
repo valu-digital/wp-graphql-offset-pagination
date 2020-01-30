@@ -376,7 +376,7 @@ you would have to replicate the `CASE` statement in the `WHERE` clause which
 would probably destroy the performance gains because `CASE` statement would
 need to be evaluated on each row (not 100% sure on this!).
 
-Luckily the cursor builder in WPGraphQL handles this recursive SQL building
+Luckily the cursor builder in WPGraphQL handles this recursive SQL generation
 for you for the standard WP Query uses but when you modify the SQL you must
 be very careful. But not all modification are bad. For example just adding
 extra filtering the to the `$fields['where']` should be ok. For the rest
