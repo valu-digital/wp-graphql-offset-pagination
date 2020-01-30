@@ -3,8 +3,8 @@
 Adds traditional offset pagination support to WPGraphQL. This useful only
 when you need to implement
 
--   numbered links to the "pages"
--   ordering with custom SQL
+-   Numbered links to the "pages"
+-   Ordering with custom SQL
     -   Read the [tutorial](docs/tutorial.md)
     -   You should read it even if don't plan to use this plugin as it teaches
         you a lot about WPGraphQL internals!
