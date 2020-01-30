@@ -293,7 +293,7 @@ wp-graphql cursors. The first page looks good, maybe the second one too but
 at some point it goes of the rails and misses some data.
 
 If you are interested why cursor pagination is a good idea despite of its limitiations
-I's recommend you to read this article from Slack Engineering
+I'd recommend you to read this article from Slack Engineering
 
 <https://slack.engineering/evolving-api-pagination-at-slack-1c1f644f8e12>
 
