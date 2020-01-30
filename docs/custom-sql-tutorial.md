@@ -356,8 +356,8 @@ The cursor is implemented as a `WHERE` clause using the auto incremented row
 id. So technically the cursor is a post id for `wp_posts` table. But **when a
 `ORDER` clause is added it must be implemented as a cursor too!**
 
-Here's an example of a SQL query for order by `post_title`, `modified_date`,
-`created_date` and `id`:
+Here's an example of a SQL query with cursors for order by `post_title`,
+`modified_date`, `created_date` and `id`:
 
 ```sql
 WHERE post_title >= $post_title_cursor
