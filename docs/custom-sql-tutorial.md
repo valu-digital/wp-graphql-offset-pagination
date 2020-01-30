@@ -2,9 +2,9 @@
 
 Although this tutorial in is the `wp-graphql-offset-pagination` repository
 this tutorial contains valuable information for devs extending WPGraphQL
-filtering / ordering with just plain WPGraphQL. We'll discuss what the limits
-are and when the WPGraphQL cursors fall short. We also only use PHP APIs
-exposed by WPGraphQL and WP itself.
+filtering / ordering with just plain WPGraphQL cursors. We'll discuss what
+the limits are and how they fall short. We also only use PHP APIs exposed by
+WPGraphQL and WP itself.
 
 Here's a limit pushing use case:
 
