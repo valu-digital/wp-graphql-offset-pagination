@@ -192,6 +192,7 @@ add_filter(
         }
 
         $meta_key = 'example';
+        // 🛑 Do not forget to escape user input data!
         $prioritize = esc_sql($query->query_vars['prioritize']);
 
         // Create join for the meta field. We use a custom alias for the join so
