@@ -369,12 +369,20 @@ WHERE post_title >= $post_title_cursor
 ORDER BY post_title, post_modified, post_created, id
 ```
 
-As you can see it is a recursive problem. You cannot modify this by stuffing
-some extra SQL in the `post_clauses` hook.
+As you can see it is a recursive problem. You cannot modify this by just
+stuffing some extra SQL in the `post_clauses` filter. Also even if you could
+you would have to replicate the `CASE` statement in the `WHERE` clause which
+would probably destroy the performance gains because `CASE` statement would
+need to be evaluated on each row (not 100% sure on this!).
 
-Luckily the cursor builder in WPGraphQL handles this for you for the standard
-WP Query uses but when you modify the SQL you must be very careful. But not
-all modification are bad. For example just adding extra filtering the to the
-`$fields['where']` should be ok. For the rest there is the
-`wp-graphql-offset-pagination` enables all the crazy use cases like this.
-Albeit beign bit slower.
+Luckily the cursor builder in WPGraphQL handles this recursive SQL building
+for you for the standard WP Query uses but when you modify the SQL you must
+be very careful. But not all modification are bad. For example just adding
+extra filtering the to the `$fields['where']` should be ok. For the rest
+there is the `wp-graphql-offset-pagination` enables all the crazy use cases
+like this. Albeit beign bit slower.
+
+If you have questions or something to add feel free to ping me on Twitter
+[@esamatti][] or open an issue on this repository.
+
+[@esamatti]: https://twitter.com/esamatti
