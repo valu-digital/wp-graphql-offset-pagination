@@ -1,10 +1,13 @@
 # wp-graphql-offset-pagination
 
 Adds traditional offset pagination support to WPGraphQL. This useful only
-when you need to implement
+when you need to implement:
 
--   complex filtering / ordering with custom SQL
--   numbered links to the "pages"
+-   Numbered links to the "pages"
+-   Ordering with custom SQL
+    -   Read the [tutorial](docs/tutorial.md)
+    -   You should read it even if don't plan to use this plugin as it teaches
+        you a lot about WPGraphQL internals!
 
 **You should not use this plugin if you can avoid it.** The cursors in the
 wp-graphql core are faster and more efficient although this plugin should perform
@@ -23,8 +26,8 @@ query Posts {
     posts(where: { offsetPagination: { size: 10, offset: 10 } }) {
         pageInfo {
             offsetPagination {
-                # Boolean whether there are more nodes in this connection.
-                # Eg. you can increment the offset to get more nodes.
+                # Boolean whether there is more nodes in this connection.
+                # Eg. you can increment offset to get more nodes.
                 # Use this to implement "fetch more" buttons etc.
                 hasMore
 
@@ -51,12 +54,12 @@ The where argument is the same for `contentNodes` and `users`.
 
 If you use composer you can install it from Packagist
 
-    composer require valu/wp-graphql-offset-pagination
+    composer require valu//wp-graphql-offset-pagination
 
 Otherwise you can clone it from Github to your plugins using the stable branch
 
     cd wp-content/plugins
-    git clone --branch stable https://github.com/valu-digital/wp-graphql-offset-pagination.git
+    git clone --branch stable https://github.com/valu-digital//wp-graphql-offset-pagination.git
 
 ## Prior Art
 
