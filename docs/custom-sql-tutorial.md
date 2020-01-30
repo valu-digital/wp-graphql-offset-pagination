@@ -143,9 +143,6 @@ add_filter(
     function (array $query_args, array $where_args) {
         if (!isset($where_args['prioritize'])) {
             // If the "prioritize where is argument is not used, bail out.
-            // We might also want to check for the specific post type / connection resolver type too
-            // to be sure we don't mess with queries we don't intend to
-            // Here are the filter arguments https://github.com/wp-graphql/wp-graphql/blob/59b1fef494b878de8d9912b4c8fcd054d548da47/src/Data/Connection/PostObjectConnectionResolver.php#L392-L409
             return $query_args;
         }
 
