@@ -201,7 +201,7 @@ can do that by hooking in the low level `post_clauses` hook that allow us to
 manipulate the SQL query generation inside the WP Query instance.
 
 This were we get into the territory that Cursors cannot handle. Specifically
-because cause we mess with the `orderby` clause.
+because we mess with the `orderby` clause.
 
 ```php
 add_filter(
