@@ -206,7 +206,7 @@ This were we get into the territory that Cursors cannot handle. Specifically
 ```php
 add_filter(
     'posts_clauses',
-    function (array $fields, \WP_Query $query) {
+    function (array $clauses, \WP_Query $query) {
         global $wpdb;
 
         if (!isset($query->query_vars['prioritize'])) {
@@ -214,7 +214,7 @@ add_filter(
             // WPGraphQL filter. NOTE: You should probably use more unique query
             // var name since this hook is called on every \WP_Query usage in
             // WP.
-            return $fields;
+            return $clauses;
         }
 
         $meta_key = 'example';
@@ -222,14 +222,14 @@ add_filter(
         $prioritize = esc_sql($query->query_vars['prioritize']);
 
         // Create join for the meta field. We use a custom alias for the join so
-        // we can reference it from the "fields" clause
+        // we can reference it from the 'fields' clause
         $join_name = 'CUSTOM_META_JOIN';
         $join = " LEFT JOIN $wpdb->postmeta AS $join_name
             ON $wpdb->posts.ID = $join_name.post_id
             AND $join_name.meta_key = '$meta_key' ";
 
         // Append it to the existing joins
-        $fields['join'] .= $join;
+        $clauses['join'] .= $join;
 
         // Let's add a custom field with alias to the query which can be
         // referenced in ordering. This is the magic. More on this later.
@@ -242,12 +242,12 @@ add_filter(
             END AS $field_name";
 
         // Append it to the fields
-        $fields['fields'] .= ", $field";
+        $clauses['fields'] .= ", $field";
 
         // Make this field the first ordering directive by prepending it
-        $fields['orderby'] = "${field_name}, " . $fields['orderby'];
+        $clauses['orderby'] = "${field_name}, " . $clauses['orderby'];
 
-        return $fields;
+        return $clauses;
     },
     10,
     2
