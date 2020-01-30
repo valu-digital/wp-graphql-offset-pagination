@@ -312,7 +312,7 @@ I'll leave that implementation as an exercise to you.
 ## Cursors?
 
 Finally you might want to try you what happens you paginate with the core
-wp-graphql cursors (`first`, `after`, pageInfo.endCursor`). The first page
+wp-graphql cursors (`first`, `after`, `pageInfo.endCursor`). The first page
 looks good, maybe the second one too but at some point it goes of the rails
 and misses some data.
 
