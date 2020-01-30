@@ -289,12 +289,13 @@ WHEN
 ```
 
 Finally you might want to try you what happens you paginate with the core
-wp-graphql cursors. The first page looks good, maybe the second too but at
-some point it goes of the rails and misses some data.
+wp-graphql cursors. The first page looks good, maybe the second one too but
+at some point it goes of the rails and misses some data.
 
 If you are interested why cursor pagination is a good idea despite of its limitiations
 I's recommend you to read this article from Slack Engineering
 
 <https://slack.engineering/evolving-api-pagination-at-slack-1c1f644f8e12>
 
-tl;dr it's faster on big data sets.
+tl;dr it's faster on big data sets but unfortuntely customizing it like this
+is really hard if not impossible.
