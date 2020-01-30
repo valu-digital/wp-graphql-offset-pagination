@@ -167,7 +167,7 @@ add_filter(
 
 If we were doing something simpler that can be done with straight WP Query we
 could just add it to the `$query_args` in a form regonized by it and we would
-be done. Ex. `meta_query`, `tax_query` etc.. But that's only an "Advanced
+be done. Ex. `meta_query`, `tax_query` etc. But that's only an "Advanced
 Level" WPGraphQL usage and this article is about the "Very Advanced Level" so
 we'll continue to write custom SQL 😱
 
