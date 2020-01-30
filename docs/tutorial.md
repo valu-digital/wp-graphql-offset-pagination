@@ -193,7 +193,7 @@ WPGraphQL should support all features supported by WP Query. Including
 But that's only an "Advanced Level" WPGraphQL usage and this article is about
 the "Very Advanced Level" so we'll continue to write custom SQL 😱
 
-## Transforming SQL in the WP Query
+## Generating SQL in the WP Query
 
 Since we only moved the `prioritize` field to a query var that is not
 understood by WP Query we must actually teach WP Query how to handle it. We
