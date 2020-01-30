@@ -2,3 +2,4 @@
 .wp-install
 _output
 composer.lock
+vendor
