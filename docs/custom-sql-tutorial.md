@@ -288,6 +288,8 @@ WHEN
     AND $join_name.meta_key = '$meta_key'
 ```
 
+I'll leave that implementation as an exercise to you.
+
 Finally you might want to try you what happens you paginate with the core
 wp-graphql cursors. The first page looks good, maybe the second one too but
 at some point it goes of the rails and misses some data.
