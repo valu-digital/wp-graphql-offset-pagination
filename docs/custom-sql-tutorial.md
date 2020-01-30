@@ -378,7 +378,7 @@ need to be evaluated on each row (not 100% sure on this!).
 
 Luckily the cursor builder in WPGraphQL handles this recursive SQL generation
 for you for the standard WP Query uses but when you modify the SQL you must
-be very careful. But not all modification are bad. For example just adding
+be very careful. But not all modifications are bad. For example just adding
 extra filtering the to the `$fields['where']` should be ok. For the rest
 there is the `wp-graphql-offset-pagination` enables all the crazy use cases
 like this. Albeit beign bit slower.
