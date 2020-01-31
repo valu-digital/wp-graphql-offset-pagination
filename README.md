@@ -54,12 +54,12 @@ The where argument is the same for `contentNodes` and `users`.
 
 If you use composer you can install it from Packagist
 
-    composer require valu//wp-graphql-offset-pagination
+    composer require valu/wp-graphql-offset-pagination
 
 Otherwise you can clone it from Github to your plugins using the stable branch
 
     cd wp-content/plugins
-    git clone --branch stable https://github.com/valu-digital//wp-graphql-offset-pagination.git
+    git clone --branch stable https://github.com/valu-digital/wp-graphql-offset-pagination.git
 
 ## Prior Art
 
