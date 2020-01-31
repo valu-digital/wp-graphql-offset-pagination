@@ -17,8 +17,7 @@ You have a custom post type for events and you have the event start time
 
 The tricky bit is the handling of the events that have been already started
 today because they they match to both 1 and 3. In pure MySQL terms this can
-be implemented with a clever use of `CASE`, `FROM_UNIXTIME` `DATE` and
-`NOW()`.
+be implemented with a clever use of `CASE`, `DATE` and `NOW()`.
 
 This tutorial is on very advanced level. If you get through it and understand
 everything I bet you can safely call yourself a "senior WPGraphQL
@@ -182,7 +181,7 @@ $query_args['meta_query'] = [
         'key' => 'start_date',
         'compare' => '<',
         'value' => time(), // Compare with the current timestamp.
-        'type' => 'NUMERIC',
+        'type' => 'NUMERIC'
     ]
 ];
 ```
@@ -334,7 +333,7 @@ WHEN DATE( FROM_UNIXTIME( $join_name.meta_value ) ) = DATE( NOW() )
 This works because the `DATE` type in SQL does not contain the time part and
 casting to it just drops it so if it equals to current date it's today!
 
-I'll leave that implementation as an exercise to you.
+I'll leave the complete implementation as an exercise to you.
 
 ## Cursors?
 
