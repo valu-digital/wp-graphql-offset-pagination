@@ -341,7 +341,7 @@ We're done coding-wise but since I have your attention we'll dive a bit
 deeper into the Cursors in WPGraphQL.
 
 You might want to try what happens when you try to paginate the example with
-the WPGraphlQL cursors (`first`, `after`, `pageInfo.endCursor`). The first
+the WPGraphQL cursors (`first`, `after`, `pageInfo.endCursor`). The first
 page looks good, maybe the second one too but at some point it goes of the
 rails and misses some data.
 
