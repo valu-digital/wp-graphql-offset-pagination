@@ -340,10 +340,10 @@ I'll leave the complete implementation as an exercise to you.
 We're done coding-wise but since I have your attention we'll dive a bit
 deeper into the Cursors in WPGraphQL.
 
-You might want to try you what happens you paginate with the WPGraphlQL
-cursors (`first`, `after`, `pageInfo.endCursor`). The first page looks good,
-maybe the second one too but at some point it goes of the rails and misses
-some data.
+You might want to try what happens when you try to paginate the example with
+the WPGraphlQL cursors (`first`, `after`, `pageInfo.endCursor`). The first
+page looks good, maybe the second one too but at some point it goes of the
+rails and misses some data.
 
 If you are interested why cursor pagination is a good idea despite of its
 limitiations I'd recommend you to read this article from Slack Engineering
