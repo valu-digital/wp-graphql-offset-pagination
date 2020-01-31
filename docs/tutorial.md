@@ -17,7 +17,7 @@ You have a custom post type for events and you have the event start time
 
 The tricky bit is the handling of the events that have been already started
 today because they they match to both 1 and 3. In pure MySQL terms this can
-be implemented with a clever use of `CASE`, `FROM_UNIXTIME` `DATE` and
+be implemented with a clever use of `CASE`, `DATE` and
 `NOW()`.
 
 This tutorial is on very advanced level. If you get through it and understand
@@ -182,7 +182,7 @@ $query_args['meta_query'] = [
         'key' => 'start_date',
         'compare' => '<',
         'value' => time(), // Compare with the current timestamp.
-        'type' => 'NUMERIC',
+        'type' => 'NUMERIC'
     ]
 ];
 ```
@@ -331,17 +331,17 @@ The `WHEN` statement for it would be something like this
 WHEN DATE( FROM_UNIXTIME( $join_name.meta_value ) ) = DATE( NOW() )
 ```
 
-I'll leave that implementation as an exercise to you.
+I'll leave the complete implementation as an exercise to you.
 
 ## Cursors?
 
 We're done coding-wise but since I've have your attention we'll dive a bit
 deeper into the Cursors in WPGraphQL.
 
-You might want to try you what happens you paginate with the WPGraphlQL
-cursors (`first`, `after`, `pageInfo.endCursor`). The first page looks good,
-maybe the second one too but at some point it goes of the rails and misses
-some data.
+You might want to try you what happens when you paginate with the
+`prioritize` input using the WPGraphlQL cursors (`first`, `after`,
+`pageInfo.endCursor`). The first page looks good, maybe the second one too
+but at some point it goes of the rails and misses some data.
 
 If you are interested why cursor pagination is a good idea despite of its
 limitiations I'd recommend you to read this article from Slack Engineering
