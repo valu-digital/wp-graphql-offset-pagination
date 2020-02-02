@@ -1,6 +1,6 @@
 # wp-graphql-offset-pagination
 
-Adds traditional offset pagination support to WPGraphQL. This useful only
+Adds traditional offset pagination support to WPGraphQL. This is useful only
 when you need to implement:
 
 -   Numbered links to the "pages"
