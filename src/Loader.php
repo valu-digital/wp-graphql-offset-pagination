@@ -86,7 +86,7 @@ class Loader
     static function get_offset_nodes(AbstractConnectionResolver $resolver)
     {
         $size = self::get_page_size($resolver);
-        return array_slice($resolver->get_items(), 0, $size);
+        return array_slice($resolver->get_nodes(), 0, $size);
     }
 
     static function is_offset_resolver(AbstractConnectionResolver $resolver)
@@ -187,7 +187,7 @@ class Loader
 
         $page_info['offsetPagination'] = [
             'total' => $total,
-            'hasMore' => count($resolver->get_items()) > $size,
+            'hasMore' => count($resolver->get_ids()) > $size,
             'hasPrevious' => $offset > 0,
         ];
         return $page_info;
