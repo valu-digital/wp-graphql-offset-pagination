@@ -86,7 +86,14 @@ class Loader
     static function get_offset_nodes(AbstractConnectionResolver $resolver)
     {
         $size = self::get_page_size($resolver);
-        return array_slice($resolver->get_nodes(), 0, $size);
+
+        $nodes = [];
+
+        foreach ($resolver->get_ids() as $id) {
+            $nodes[$id] = $resolver->get_node_by_id($id);
+        }
+
+        return array_slice($nodes, 0, $size);
     }
 
     static function is_offset_resolver(AbstractConnectionResolver $resolver)
