@@ -52,6 +52,8 @@ The where argument is the same for `contentNodes` and `users`.
 
 ## Installation
 
+Use must have WPGraphQL v0.8.3 or later installed.
+
 If you use composer you can install it from Packagist
 
     composer require valu/wp-graphql-offset-pagination
