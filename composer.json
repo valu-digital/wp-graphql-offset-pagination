@@ -13,7 +13,15 @@
     "require-dev": {
         "valu/wp-testing-tools": "^0.4.0",
         "lucatume/wp-browser": "^2.2",
-        "phpunit/phpunit": "^8.0"
+        "phpunit/phpunit": "^8.0",
+        "codeception/module-asserts": "^1.0",
+        "codeception/module-phpbrowser": "^1.0",
+        "codeception/module-webdriver": "^1.0",
+        "codeception/module-db": "^1.0",
+        "codeception/module-filesystem": "^1.0",
+        "codeception/module-rest": "^1.0",
+        "codeception/module-cli": "^1.0",
+        "codeception/util-universalframework": "^1.0"
     },
     "autoload": {
         "psr-4": {
