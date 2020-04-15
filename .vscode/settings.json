@@ -1,0 +1,6 @@
+{
+    "files.exclude": {
+        "**/.wp-install": true,
+        "**/vendor": true
+    }
+}
