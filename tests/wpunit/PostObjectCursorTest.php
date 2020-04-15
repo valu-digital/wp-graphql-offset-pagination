@@ -114,15 +114,15 @@ class PostObjectCursorTest extends \Codeception\TestCase\WPTestCase
 
     private function deleteByMetaKey($key, $value)
     {
-        $args = array(
-            'meta_query' => array(
-                array(
+        $args = [
+            'meta_query' => [
+                [
                     'key' => $key,
                     'value' => $value,
                     'compare' => '=',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
 
         $query = new WP_Query($args);
 
@@ -179,7 +179,7 @@ class PostObjectCursorTest extends \Codeception\TestCase\WPTestCase
         }, $second['data']['posts']['edges']);
 
         // Make correspondig WP_Query
-        WPGraphQL::__set_is_graphql_request(true);
+        WPGraphQL::set_is_graphql_request(true);
         $first_page = new WP_Query(
             array_merge($meta_fields, [
                 'post_status' => 'publish',
@@ -199,7 +199,7 @@ class PostObjectCursorTest extends \Codeception\TestCase\WPTestCase
                 'paged' => 2,
             ])
         );
-        WPGraphQL::__set_is_graphql_request(true);
+        WPGraphQL::set_is_graphql_request(true);
 
         $first_page_expected = wp_list_pluck($first_page->posts, 'ID');
         $second_page_expected = wp_list_pluck($second_page->posts, 'ID');
