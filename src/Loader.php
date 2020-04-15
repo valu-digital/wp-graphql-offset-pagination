@@ -44,13 +44,6 @@ class Loader
         );
 
         add_filter(
-            'graphql_connection',
-            [$this, 'op_filter_graphql_connection'],
-            10,
-            2
-        );
-
-        add_filter(
             'graphql_connection_query_args',
             [$this, 'op_filter_graphql_connection_query_args'],
             10,
@@ -58,11 +51,20 @@ class Loader
         );
 
         add_filter(
-            'graphql_connection_nodes',
-            [$this, 'op_filter_get_nodes'],
+            'graphql_connection_amount_requested',
+            [$this, 'op_filter_graphql_connection_amount_requested'],
             10,
             2
         );
+    }
+
+    function op_filter_graphql_connection_amount_requested($amount, $resolver)
+    {
+        if (self::is_offset_resolver($resolver)) {
+            return self::get_page_size($resolver);
+        }
+
+        return $amount;
     }
 
     /**
@@ -70,50 +72,14 @@ class Loader
      */
     static function get_page_size(AbstractConnectionResolver $resolver)
     {
-        $args = $resolver->get_query_args();
-        $size = 0;
-
-        if ($resolver instanceof UserConnectionResolver) {
-            $size = $args['offsetPagination']['size'] ?? 0;
-        } else {
-            // post connection
-            $size =
-                $args['graphql_args']['where']['offsetPagination']['size'] ?? 0;
-        }
-        return intval($size);
-    }
-
-    static function get_offset_nodes(AbstractConnectionResolver $resolver)
-    {
-        $size = self::get_page_size($resolver);
-
-        $nodes = [];
-
-        foreach ($resolver->get_ids() as $id) {
-            $nodes[$id] = $resolver->get_node_by_id($id);
-        }
-
-        return array_slice($nodes, 0, $size);
+        $args = $resolver->getArgs();
+        return intval($args['where']['offsetPagination']['size'] ?? 0);
     }
 
     static function is_offset_resolver(AbstractConnectionResolver $resolver)
     {
-        $args = $resolver->get_query_args();
-
-        if ($resolver instanceof UserConnectionResolver) {
-            return isset($args['offsetPagination']);
-        }
-
-        return isset($args['graphql_args']['where']['offsetPagination']);
-    }
-
-    function op_filter_get_nodes($nodes, AbstractConnectionResolver $resolver)
-    {
-        if (self::is_offset_resolver($resolver)) {
-            return self::get_offset_nodes($resolver);
-        }
-
-        return $nodes;
+        $args = $resolver->getArgs();
+        return isset($args['where']['offsetPagination']);
     }
 
     /**
@@ -154,35 +120,14 @@ class Loader
         ]);
     }
 
-    /**
-     * By default wp-graphql slices the "nodes" in the connection nodes based
-     * on the "first" input field:
-     *
-     * https://github.com/wp-graphql/wp-graphql/blob/d5089db403c30f634e8de422e32c46074e1f140d/src/Data/Connection/AbstractConnectionResolver.php#L682
-     * https://github.com/wp-graphql/wp-graphql/blob/d5089db403c30f634e8de422e32c46074e1f140d/src/Data/Connection/AbstractConnectionResolver.php#L490
-     *
-     * It defaults to 10 which interferes with offset pagination. This filter
-     * restores the nodes to original items when offset pagination is in use.
-     */
-    function op_filter_graphql_connection(
-        array $connection,
-        AbstractConnectionResolver $resolver
-    ) {
-        if (self::is_offset_resolver($resolver)) {
-            $connection['nodes'] = self::get_offset_nodes($resolver);
-        }
-
-        return $connection;
-    }
-
     function op_filter_graphql_connection_page_info(
         $page_info,
         AbstractConnectionResolver $resolver
     ) {
         $size = self::get_page_size($resolver);
         $query = $resolver->get_query();
-        $args = $resolver->get_query_args();
-        $offset = $args['offsetPagination']['offset'] ?? 0;
+        $args = $resolver->getArgs();
+        $offset = $args['where']['offsetPagination']['offset'] ?? 0;
 
         $total = null;
 
