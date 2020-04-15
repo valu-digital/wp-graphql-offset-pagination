@@ -1,0 +1,27 @@
+{
+    "name": "wp-graphql-offset-pagination",
+    "version": "1.0.0",
+    "description": "Adds traditional offset pagination support to WPGraphQL. This useful only when you need to implement",
+    "main": "index.js",
+    "directories": {
+        "test": "tests"
+    },
+    "dependencies": {
+        "@prettier/plugin-php": "^0.14.0",
+        "prettier": "^2.0.4"
+    },
+    "devDependencies": {},
+    "scripts": {
+        "prettier": "prettier --write 'src/*.php' 'tests/*/*.php'"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/valu-digital/wp-graphql-offset-pagination.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/valu-digital/wp-graphql-offset-pagination/issues"
+    },
+    "homepage": "https://github.com/valu-digital/wp-graphql-offset-pagination#readme"
+}
