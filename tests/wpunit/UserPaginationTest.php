@@ -38,7 +38,7 @@ class UserPaginationTest extends \Codeception\TestCase\WPTestCase
     public function testUsersCanLimit()
     {
         $this->createUsers(10);
-        wp_set_current_user(1);
+        wp_set_current_user(get_user_by('login', 'admin')->ID);
 
         $res = graphql([
             'query' => '
@@ -75,7 +75,7 @@ class UserPaginationTest extends \Codeception\TestCase\WPTestCase
     public function testUsersSetOffset()
     {
         $this->createUsers(10);
-        wp_set_current_user(1);
+        wp_set_current_user(get_user_by('login', 'admin')->ID);
 
         $res = graphql([
             'query' => '
@@ -112,7 +112,7 @@ class UserPaginationTest extends \Codeception\TestCase\WPTestCase
     public function testUsersLongOffset()
     {
         $this->createUsers(20);
-        wp_set_current_user(1);
+        wp_set_current_user(get_user_by('login', 'admin')->ID);
 
         $res = graphql([
             'query' => '
@@ -150,6 +150,7 @@ class UserPaginationTest extends \Codeception\TestCase\WPTestCase
     {
         $this->createUsers(10);
         wp_set_current_user(1);
+        wp_set_current_user(get_user_by('login', 'admin')->ID);
 
         $res = graphql([
             'query' => '
@@ -195,7 +196,7 @@ class UserPaginationTest extends \Codeception\TestCase\WPTestCase
     public function testHasMoreWithOffsetOne()
     {
         $this->createUsers(10);
-        wp_set_current_user(1);
+        wp_set_current_user(get_user_by('login', 'admin')->ID);
 
         $res = graphql([
             'query' => '
@@ -241,7 +242,7 @@ class UserPaginationTest extends \Codeception\TestCase\WPTestCase
     public function testHasMoreFalseAtEnd()
     {
         $this->createUsers(10);
-        wp_set_current_user(1);
+        wp_set_current_user(get_user_by('login', 'admin')->ID);
 
         $res = graphql([
             'query' => '
@@ -286,7 +287,7 @@ class UserPaginationTest extends \Codeception\TestCase\WPTestCase
     public function testCanGetTotal()
     {
         $this->createUsers(10);
-        wp_set_current_user(1);
+        wp_set_current_user(get_user_by('login', 'admin')->ID);
 
         $res = graphql([
             'query' => '
