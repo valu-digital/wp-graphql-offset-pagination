@@ -38,7 +38,7 @@ class UserPaginationTest extends \Codeception\TestCase\WPTestCase
     public function testUsersCanLimit()
     {
         $this->createUsers(10);
-        wp_set_current_user(1);
+        wp_set_current_user(get_user_by('login', 'admin')->ID);
 
         $res = graphql([
             'query' => '
@@ -72,10 +72,36 @@ class UserPaginationTest extends \Codeception\TestCase\WPTestCase
         );
     }
 
+    public function testUsersCannotBeReadWithoutAuth()
+    {
+        $this->createUsers(2);
+
+        $res = graphql([
+            'query' => '
+            query Users {
+                users(where: {
+                    orderby: {field: DISPLAY_NAME, order: ASC},
+                    offsetPagination: {size: 5}
+                }) {
+                nodes {
+                    name
+                   }
+                }
+            }
+        ',
+        ]);
+
+        $this->assertEquals('', $res['errors'][0]['message'] ?? '');
+        $nodes = $res['data']['users']['nodes'];
+        $names = \wp_list_pluck($nodes, 'name');
+
+        $this->assertEquals(0, count($names));
+    }
+
     public function testUsersSetOffset()
     {
         $this->createUsers(10);
-        wp_set_current_user(1);
+        wp_set_current_user(get_user_by('login', 'admin')->ID);
 
         $res = graphql([
             'query' => '
@@ -112,7 +138,7 @@ class UserPaginationTest extends \Codeception\TestCase\WPTestCase
     public function testUsersLongOffset()
     {
         $this->createUsers(20);
-        wp_set_current_user(1);
+        wp_set_current_user(get_user_by('login', 'admin')->ID);
 
         $res = graphql([
             'query' => '
@@ -150,6 +176,7 @@ class UserPaginationTest extends \Codeception\TestCase\WPTestCase
     {
         $this->createUsers(10);
         wp_set_current_user(1);
+        wp_set_current_user(get_user_by('login', 'admin')->ID);
 
         $res = graphql([
             'query' => '
@@ -195,7 +222,7 @@ class UserPaginationTest extends \Codeception\TestCase\WPTestCase
     public function testHasMoreWithOffsetOne()
     {
         $this->createUsers(10);
-        wp_set_current_user(1);
+        wp_set_current_user(get_user_by('login', 'admin')->ID);
 
         $res = graphql([
             'query' => '
@@ -241,7 +268,7 @@ class UserPaginationTest extends \Codeception\TestCase\WPTestCase
     public function testHasMoreFalseAtEnd()
     {
         $this->createUsers(10);
-        wp_set_current_user(1);
+        wp_set_current_user(get_user_by('login', 'admin')->ID);
 
         $res = graphql([
             'query' => '
@@ -286,7 +313,7 @@ class UserPaginationTest extends \Codeception\TestCase\WPTestCase
     public function testCanGetTotal()
     {
         $this->createUsers(10);
-        wp_set_current_user(1);
+        wp_set_current_user(get_user_by('login', 'admin')->ID);
 
         $res = graphql([
             'query' => '
