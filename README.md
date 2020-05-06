@@ -17,7 +17,7 @@ This plugin implements offset pagination for post object (build-in and custom
 ones), content nodes and user connections. PRs welcome for term connections.
 See [CONTRIBUTING.md](CONTRIBUTING.md).
 
-This is tested with WPGraphQL 0.6.x.
+
 
 ## Usage
 
@@ -52,7 +52,7 @@ The where argument is the same for `contentNodes` and `users`.
 
 ## Installation
 
-Use must have WPGraphQL v0.8.3 or later installed.
+Use must have WPGraphQL v0.8.4 or later installed.
 
 If you use composer you can install it from Packagist
 
