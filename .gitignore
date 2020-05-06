@@ -2,5 +2,4 @@
 .wp-install
 _output
 composer.lock
-vendor
 node_modules
