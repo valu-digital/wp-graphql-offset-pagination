@@ -10,7 +10,7 @@
     ],
     "require": {
         "composer/installers": "^1.0",
-        "wp-graphql/wp-graphql": "dev-develop"
+        "wp-graphql/wp-graphql": "^0.8.4"
     },
     "extra": {
         "installer-paths": {
