@@ -12,5 +12,7 @@ return array(
     'Oxymel' => array($vendorDir . '/nb/oxymel'),
     'Mustache' => array($vendorDir . '/mustache/mustache/src'),
     'Hautelook' => array($vendorDir . '/hautelook/phpass/src'),
+    'Flow\\JSONPath\\Test' => array($vendorDir . '/flow/jsonpath/tests'),
+    'Flow\\JSONPath' => array($vendorDir . '/flow/jsonpath/src'),
     'Behat\\Gherkin' => array($vendorDir . '/behat/gherkin/src'),
 );
