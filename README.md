@@ -14,8 +14,10 @@ wp-graphql core are faster and more efficient although this plugin should perfor
 comparatively to a traditional WordPress pagination implementation.
 
 This plugin implements offset pagination for post object (build-in and custom
-ones), content nodes and user connections. PRs welcome for term connections.
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+ones), content nodes and user connections. This means there's no WooCommerce for example
+but checkout [this issue](https://github.com/valu-digital/wp-graphql-offset-pagination/issues/1) if you are interested in one.
+
+PRs welcome for term connections. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 
 
