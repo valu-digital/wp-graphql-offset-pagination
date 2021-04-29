@@ -13,7 +13,7 @@ class Loader
         (new Loader())->bind_hooks();
     }
 
-    function bind_hooks()
+    public function bind_hooks()
     {
         add_action(
             'graphql_register_types',
@@ -58,7 +58,7 @@ class Loader
         );
     }
 
-    function op_filter_graphql_connection_amount_requested($amount, $resolver)
+    public function op_filter_graphql_connection_amount_requested($amount, $resolver)
     {
         if (self::is_offset_resolver($resolver)) {
             return self::get_page_size($resolver);
@@ -70,13 +70,13 @@ class Loader
     /**
      * Returns true when the resolver is resolving offset pagination
      */
-    static function get_page_size(AbstractConnectionResolver $resolver)
+    public static function get_page_size(AbstractConnectionResolver $resolver)
     {
         $args = $resolver->getArgs();
         return intval($args['where']['offsetPagination']['size'] ?? 0);
     }
 
-    static function is_offset_resolver(AbstractConnectionResolver $resolver)
+    public static function is_offset_resolver(AbstractConnectionResolver $resolver)
     {
         $args = $resolver->getArgs();
         return isset($args['where']['offsetPagination']);
@@ -86,8 +86,8 @@ class Loader
      * Lazily enable total calculations only when they are asked in the
      * selection set.
      */
-    function op_filter_graphql_connection_query_args(
-        array $query_args,
+    public function op_filter_graphql_connection_query_args(
+        array|null $query_args,
         AbstractConnectionResolver $resolver
     ) {
         $info = $resolver->getInfo();
@@ -109,7 +109,7 @@ class Loader
         return $query_args;
     }
 
-    static function add_post_type_fields(\WP_Post_Type $post_type_object)
+    public static function add_post_type_fields(\WP_Post_Type $post_type_object)
     {
         $type = ucfirst($post_type_object->graphql_single_name);
         register_graphql_fields("RootQueryTo${type}ConnectionWhereArgs", [
@@ -120,7 +120,7 @@ class Loader
         ]);
     }
 
-    function op_filter_graphql_connection_page_info(
+    public function op_filter_graphql_connection_page_info(
         $page_info,
         AbstractConnectionResolver $resolver
     ) {
@@ -145,7 +145,7 @@ class Loader
         return $page_info;
     }
 
-    function op_filter_map_offset_to_wp_query_args(
+    public function op_filter_map_offset_to_wp_query_args(
         array $query_args,
         array $where_args
     ) {
@@ -163,7 +163,7 @@ class Loader
         return $query_args;
     }
 
-    function op_filter_map_offset_to_wp_user_query_args(
+    public function op_filter_map_offset_to_wp_user_query_args(
         array $query_args,
         array $where_args
     ) {
@@ -179,7 +179,7 @@ class Loader
         return $query_args;
     }
 
-    function op_action_register_types()
+    public function op_action_register_types()
     {
         foreach (\WPGraphQL::get_allowed_post_types() as $post_type) {
             self::add_post_type_fields(get_post_type_object($post_type));
