@@ -87,7 +87,7 @@ class Loader
      * selection set.
      */
     function op_filter_graphql_connection_query_args(
-        array $query_args,
+        $query_args,
         AbstractConnectionResolver $resolver
     ) {
         $info = $resolver->getInfo();
