@@ -21,6 +21,14 @@ composer install
 
 composer wp-install
 
+cat > $HOME/.my.cnf <<EOF
+[client]
+user=${WPTT_DB_USER}
+password=${WPTT_DB_PASSWORD}
+host=${WPTT_DB_HOST}
+database=${WPTT_DB_NAME}
+EOF
+
 
 if [ "$(wp-install --status)" = "full" ]; then
     >&2 echo "WP is running at http://localhost:8080/ and run tests against it using 'docker/run shell'"

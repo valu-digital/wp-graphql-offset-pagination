@@ -23,6 +23,9 @@ help() {
         Start the container without installing anything. Usefull for
         debugging or developing install steps
 
+    $cmd clean
+        Remove the installation directory and containers
+
     "
 }
 
@@ -78,6 +81,11 @@ update() {
     exit 5
 }
 
+clean() {
+    rm -rf "$WPTT_INSTALL_DIR"
+    compose rm
+}
+
 case "${1:-}" in
     -h|--help)
         help
@@ -103,6 +111,10 @@ case "${1:-}" in
     update)
         shift
         update
+    ;;
+    clean)
+        shift
+        clean
     ;;
     *)
         >&2 echo "Bad action ${1:-}"
