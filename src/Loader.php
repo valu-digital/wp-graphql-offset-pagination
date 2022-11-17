@@ -90,6 +90,11 @@ class Loader
         $query_args,
         AbstractConnectionResolver $resolver
     ) {
+
+        if (!is_array($query_args)) {
+            return $query_args;
+        }
+
         $info = $resolver->getInfo();
         $selection_set = $info->getFieldSelection(2);
 
