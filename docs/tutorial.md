@@ -1,6 +1,6 @@
 # Pushing WPGraphQL Cursor Limits
 
-Although this tutorial in is the `wp-graphql-offset-pagination` repository
+Although this tutorial is in the `wp-graphql-offset-pagination` repository
 this tutorial contains valuable information for any developers extending
 WPGraphQL filtering / ordering with just plain WPGraphQL cursors. We'll
 discuss what the limits are and how they fall short. We also only use PHP
