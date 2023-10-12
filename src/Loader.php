@@ -72,13 +72,13 @@ class Loader
      */
     static function get_page_size(AbstractConnectionResolver $resolver)
     {
-        $args = $resolver->getArgs();
+        $args = $resolver->get_args();
         return intval($args['where']['offsetPagination']['size'] ?? 0);
     }
 
     static function is_offset_resolver(AbstractConnectionResolver $resolver)
     {
-        $args = $resolver->getArgs();
+        $args = $resolver->get_args();
         return isset($args['where']['offsetPagination']);
     }
 
@@ -126,7 +126,7 @@ class Loader
     ) {
         $size = self::get_page_size($resolver);
         $query = $resolver->get_query();
-        $args = $resolver->getArgs();
+        $args = $resolver->get_args();
         $offset = $args['where']['offsetPagination']['offset'] ?? 0;
 
         $total = null;
