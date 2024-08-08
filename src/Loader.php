@@ -72,13 +72,13 @@ class Loader
      */
     static function get_page_size(AbstractConnectionResolver $resolver)
     {
-        $args = $resolver->getArgs();
+        $args = $resolver->get_args();
         return intval($args['where']['offsetPagination']['size'] ?? 0);
     }
 
     static function is_offset_resolver(AbstractConnectionResolver $resolver)
     {
-        $args = $resolver->getArgs();
+        $args = $resolver->get_args();
         return isset($args['where']['offsetPagination']);
     }
 
@@ -90,7 +90,7 @@ class Loader
         $query_args,
         AbstractConnectionResolver $resolver
     ) {
-        $info = $resolver->getInfo();
+        $info = $resolver->get_info();
         $selection_set = $info->getFieldSelection(2);
 
         if (!isset($selection_set['pageInfo']['offsetPagination']['total'])) {
@@ -112,10 +112,10 @@ class Loader
     static function add_post_type_fields(\WP_Post_Type $post_type_object)
     {
         $type = ucfirst($post_type_object->graphql_single_name);
-        register_graphql_fields("RootQueryTo${type}ConnectionWhereArgs", [
+        register_graphql_fields("RootQueryTo{$type}ConnectionWhereArgs", [
             'offsetPagination' => [
                 'type' => 'OffsetPagination',
-                'description' => "Paginate ${type}s with offsets",
+                'description' => "Paginate {$type}s with offsets",
             ],
         ]);
     }
@@ -126,7 +126,7 @@ class Loader
     ) {
         $size = self::get_page_size($resolver);
         $query = $resolver->get_query();
-        $args = $resolver->getArgs();
+        $args = $resolver->get_args();
         $offset = $args['where']['offsetPagination']['offset'] ?? 0;
 
         $total = null;
