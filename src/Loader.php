@@ -36,6 +36,13 @@ class Loader
             2
         );
 
+	    add_filter(
+		    'graphql_map_input_fields_to_wp_comment_query',
+		    [$this, 'op_filter_map_offset_to_wp_comment_query_args'],
+		    10,
+		    2
+	    );
+
         add_filter(
             'graphql_connection_page_info',
             [$this, 'op_filter_graphql_connection_page_info'],
@@ -135,6 +142,8 @@ class Loader
             $total = $query->found_posts;
         } elseif ($query instanceof \WP_User_Query) {
             $total = $query->total_users;
+        } else if($query instanceof  \WP_Comment_Query) {
+        	$total = $query->found_comments;
         }
 
         $page_info['offsetPagination'] = [
@@ -179,11 +188,37 @@ class Loader
         return $query_args;
     }
 
+    function op_filter_map_offset_to_wp_comment_query_args(
+	    $query_args,
+	    $where_args
+    ) {
+	    if ( isset( $where_args['offsetPagination']['offset'] ) ) {
+		    $query_args['offset'] = $where_args['offsetPagination']['offset'];
+	    }
+
+	    if ( isset( $where_args['offsetPagination']['size'] ) ) {
+		    $query_args['posts_per_page'] =
+			    intval( $where_args['offsetPagination']['size'] ) + 1;
+	    }
+
+	    return $query_args;
+    }
+
     function op_action_register_types()
     {
         foreach (\WPGraphQL::get_allowed_post_types() as $post_type) {
             self::add_post_type_fields(get_post_type_object($post_type));
         }
+
+	    register_graphql_fields('RootQueryToCommentConnectionWhereArgs', [
+		    'offsetPagination' => [
+			    'type'        => 'OffsetPagination',
+			    'description' => __(
+			    	'Paginate Comments with offsets',
+				    'wp-graphql-offset-pagination'
+			    ),
+		    ],
+	    ]);
 
         register_graphql_object_type('OffsetPaginationPageInfo', [
             'description' => __(
